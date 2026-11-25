@@ -83,7 +83,7 @@ button{cursor:pointer}
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
+  gap:10px;
   flex-wrap:wrap;
 }
 .brand{
@@ -127,8 +127,8 @@ button{cursor:pointer}
 .search-box{
   position:relative;
   flex:1;
-  min-width:200px;
-  max-width:330px;
+  min-width:190px;
+  max-width:300px;
 }
 .search-input{
   width:100%;
@@ -182,7 +182,6 @@ button{cursor:pointer}
   border-radius:12px;
   display:grid;
   gap:2px;
-  transition:background .15s ease;
 }
 .search-hit:hover{background:var(--surface2)}
 .search-hit-cat{
@@ -205,7 +204,7 @@ button{cursor:pointer}
   border:0;
   background:transparent;
   color:var(--muted);
-  padding:7px 11px;
+  padding:7px 10px;
   border-radius:999px;
   font-size:12.5px;
   font-weight:600;
@@ -214,22 +213,47 @@ button{cursor:pointer}
 .nav-tabs button:hover{color:var(--text);background:var(--surface2)}
 .nav-tabs button.active{background:var(--btn-bg);color:var(--btn-text)}
 
-.theme-btn{
+.top-actions{display:flex;align-items:center;gap:6px}
+.pill-btn{
   border:1px solid var(--border);
   background:var(--surface);
   color:var(--text);
   border-radius:999px;
-  padding:8px 13px;
-  font-size:12.5px;
+  padding:7px 12px;
+  font-size:12px;
   font-weight:600;
   white-space:nowrap;
 }
+.pill-btn.admin-on{
+  background:var(--ok-soft);
+  color:var(--ok);
+  border-color:var(--ok);
+}
+
+.sync-banner{
+  max-width:1280px;
+  margin:14px auto 0;
+  padding:0 clamp(14px,3.5vw,36px);
+}
+.sync-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  padding:6px 13px;
+  border-radius:999px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--muted);
+}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
+.sync-dot.live{background:var(--ok)}
 
 /* Container */
 .wrap{
   max-width:1280px;
   margin:0 auto;
-  padding:32px clamp(14px,3.5vw,36px) 96px;
+  padding:24px clamp(14px,3.5vw,36px) 96px;
 }
 
 .eyebrow{
@@ -277,7 +301,6 @@ h1,h2,h3{
   align-items:center;
   gap:7px;
   text-decoration:none;
-  transition:border-color .18s ease,background .18s ease;
 }
 .btn-outline:hover{border-color:var(--accent);background:var(--surface2)}
 
@@ -296,6 +319,9 @@ h1,h2,h3{
   color:var(--danger);
   border-color:transparent;
 }
+
+/* Admin-only visibility */
+body:not(.is-admin) .admin-only{display:none !important}
 
 .page{display:none;animation:fadeIn .22s ease}
 .page.active{display:block}
@@ -346,9 +372,7 @@ h1,h2,h3{
   object-fit:cover;
   display:block;
   cursor:pointer;
-  transition:opacity .35s ease,transform .45s ease;
 }
-.slideshow-box:hover img{transform:scale(1.02)}
 .slide-empty{
   padding:24px;
   text-align:center;
@@ -432,7 +456,6 @@ h1,h2,h3{
   display:grid;
   place-items:center;
   overflow:hidden;
-  cursor:pointer;
 }
 .avatar-box img{
   width:100%;
@@ -627,19 +650,13 @@ h1,h2,h3{
   flex-direction:column;
   justify-content:space-between;
   font-size:12.5px;
-  transition:border-color .15s ease;
 }
 .cal-day.muted{opacity:.38;background:var(--surface2)}
 .cal-day:hover:not(.muted){border-color:var(--accent)}
 .cal-day.selected{outline:2px solid var(--accent);border-color:var(--accent)}
-.cal-day.booked{
-  background:var(--danger-soft);
-  border-color:var(--danger);
-}
-.cal-day.partial{
-  background:var(--warn-soft);
-  border-color:var(--warn);
-}
+.cal-day.booked{background:var(--danger-soft);border-color:var(--danger)}
+.cal-day.partial{background:var(--warn-soft);border-color:var(--warn)}
+
 .cal-status-pill{
   font-size:9.5px;
   font-weight:700;
@@ -684,7 +701,7 @@ h1,h2,h3{
   gap:12px;
 }
 
-/* Reviews with Photo Uploads */
+/* Reviews */
 .reviews-layout{
   display:grid;
   grid-template-columns:.95fr 1.25fr;
@@ -800,7 +817,6 @@ h1,h2,h3{
   place-items:center;
 }
 
-/* Mobile Bottom Nav */
 .mobile-nav{display:none}
 footer{
   max-width:1280px;
@@ -824,7 +840,7 @@ footer{
 @media(max-width:820px){
   .nav-tabs{display:none}
   .search-box{max-width:none;order:3;flex-basis:100%}
-  .wrap{padding:22px 14px calc(92px + env(safe-area-inset-bottom))}
+  .wrap{padding:20px 14px calc(92px + env(safe-area-inset-bottom))}
   .notes-grid{grid-template-columns:1fr}
   .mobile-nav{
     display:flex;
@@ -884,9 +900,19 @@ footer{
       <button type="button" data-page="settings" data-i18n="nav_settings">Settings</button>
     </nav>
 
-    <button type="button" class="theme-btn" id="quickThemeBtn" aria-label="Toggle theme">☾ Dark</button>
+    <div class="top-actions">
+      <button type="button" class="pill-btn" id="adminAuthBtn">🔒 Admin</button>
+      <button type="button" class="pill-btn" id="quickThemeBtn" aria-label="Toggle theme">☾ Dark</button>
+    </div>
   </div>
 </header>
+
+<div class="sync-banner">
+  <div class="sync-pill">
+    <span class="sync-dot" id="syncDot"></span>
+    <span id="syncStatusText">Local Preview Mode — Paste your Firebase Config in index.html to sync across all devices</span>
+  </div>
+</div>
 
 <main class="wrap">
   <!-- HOME -->
@@ -895,7 +921,7 @@ footer{
       <div>
         <div class="eyebrow" data-i18n="home_eyebrow">rhandom visuals · official client portal</div>
         <h1 data-i18n="home_title">Structured photography workflows, event albums, and live booking schedules.</h1>
-        <p data-i18n="home_desc">Manage event photo albums, check photographer date and time availability, publish announcements, keep studio notes, and collect verified client reviews with photos.</p>
+        <p data-i18n="home_desc">View event photo albums, check photographer date and time availability, read announcements, and leave verified client reviews with photos.</p>
         <div class="hero-actions">
           <button type="button" class="btn-primary" data-page="calendar" data-i18n="home_cta_book">Check Calendar &amp; Book →</button>
           <button type="button" class="btn-outline" data-page="albums" data-i18n="home_cta_albums">Event Albums</button>
@@ -903,7 +929,7 @@ footer{
         </div>
       </div>
 
-      <!-- Dynamic Photo Slideshow from Uploaded Album Photos -->
+      <!-- Dynamic Photo Slideshow -->
       <div class="slideshow-box" id="homeSlideshowBox">
         <div class="slide-empty" id="slideEmptyState">
           <div style="font-size:30px">🖼️</div>
@@ -951,7 +977,7 @@ footer{
             <div class="eyebrow" data-i18n="latest_updates">latest updates</div>
             <h2 style="margin-top:4px" data-i18n="nav_announcements">Announcements</h2>
           </div>
-          <button type="button" class="btn-small" data-page="announcements" data-i18n="manage_all">Manage All</button>
+          <button type="button" class="btn-small" data-page="announcements" data-i18n="manage_all">View All</button>
         </div>
         <div id="homeAnnouncementsPreview"></div>
       </div>
@@ -969,22 +995,22 @@ footer{
     </div>
   </section>
 
-  <!-- PROFILE (With Facebook, Instagram, TikTok Redirect Buttons) -->
+  <!-- PROFILE -->
   <section class="page" id="profile">
     <div class="eyebrow" data-i18n="profile_eyebrow">photographer &amp; studio profile</div>
     <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="profile_title">Profile &amp; Social Channels</h1>
     <p class="subtitle" data-i18n="profile_desc">Connect directly with Rhandom Visuals on Facebook, Instagram, and TikTok.</p>
 
     <div class="card profile-card">
-      <label class="avatar-box" id="profileAvatarBox" title="Tap to upload profile photo">
+      <div class="avatar-box" id="profileAvatarBox">
         <div class="avatar-placeholder" style="text-align:center;color:var(--muted);padding:12px">
           <div style="font-size:28px;margin-bottom:4px">📷</div>
-          <div style="font-size:12px">Upload Photo</div>
+          <div style="font-size:12px">Studio Profile</div>
         </div>
         <img id="profilePhotoImg" alt="Photographer profile photo">
-        <span class="avatar-badge">Change Photo</span>
-        <input type="file" id="profilePhotoInput" accept="image/*" aria-label="Upload profile photo">
-      </label>
+        <span class="avatar-badge admin-only">Change Photo</span>
+        <input type="file" class="admin-only" id="profilePhotoInput" accept="image/*" aria-label="Upload profile photo">
+      </div>
 
       <div>
         <div class="eyebrow" id="profileRoleDisplay">Photographer · Rhandom Visuals</div>
@@ -1003,7 +1029,7 @@ footer{
           <a class="social-btn" id="ttSocialBtn" href="#" target="_blank" rel="noopener noreferrer">
             <span>♪</span> TikTok ↗
           </a>
-          <button type="button" class="btn-small" data-page="settings" data-i18n="edit_links_btn">Edit Links in Settings</button>
+          <button type="button" class="btn-small admin-only" data-page="settings" data-i18n="edit_links_btn">Edit Links in Settings</button>
         </div>
       </div>
     </div>
@@ -1013,9 +1039,9 @@ footer{
   <section class="page" id="albums">
     <div class="eyebrow" data-i18n="albums_eyebrow">event galleries</div>
     <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="nav_albums">Event Albums</h1>
-    <p class="subtitle" data-i18n="albums_desc">Create an event album, rename it anytime, and upload event photos directly. Uploaded photos automatically appear in the Home slideshow.</p>
+    <p class="subtitle" data-i18n="albums_desc">Browse event albums or unlock Admin mode to create albums, rename them, and upload photos that sync across all devices.</p>
 
-    <div class="card" style="margin-top:18px">
+    <div class="card admin-only" style="margin-top:18px">
       <form id="createAlbumForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
         <div class="field" style="flex:1;min-width:220px;margin-bottom:0">
           <label for="newAlbumName" data-i18n="new_album_label">New Event Album Name</label>
@@ -1028,14 +1054,13 @@ footer{
     <div class="albums-grid" id="albumsContainer"></div>
   </section>
 
-  <!-- CALENDAR & BOOKING + TIME SLOTS + CANCEL/DELETE -->
+  <!-- CALENDAR & BOOKING -->
   <section class="page" id="calendar">
     <div class="eyebrow" data-i18n="cal_eyebrow">schedule &amp; reservations</div>
     <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="cal_title">Booking Calendar &amp; Availability</h1>
     <p class="subtitle" data-i18n="cal_desc">Supports Whole Day and Half-Day (Morning / Afternoon) bookings. If a morning slot is booked, afternoon slots remain open.</p>
 
     <div class="calendar-layout">
-      <!-- Left: Interactive Calendar -->
       <div class="card">
         <div class="cal-head">
           <div>
@@ -1061,7 +1086,6 @@ footer{
         </div>
       </div>
 
-      <!-- Right: Client Booking Request + Schedule Manager -->
       <div style="display:grid;gap:18px">
         <form class="card" id="clientBookingForm">
           <div class="eyebrow" data-i18n="client_req_eyebrow">client booking request</div>
@@ -1105,10 +1129,10 @@ footer{
 
         <div class="card">
           <div class="eyebrow" data-i18n="manage_sched_eyebrow">bookings &amp; unavailable dates</div>
-          <h3 style="margin:4px 0 10px" data-i18n="manage_sched_title">Manage / Cancel Bookings</h3>
-          <p class="subtitle" style="margin-bottom:12px" data-i18n="manage_sched_desc">Set an unavailable schedule manually, edit an entry, or click Cancel / Delete if a client cancels.</p>
+          <h3 style="margin:4px 0 10px" data-i18n="manage_sched_title">Scheduled Bookings</h3>
+          <p class="subtitle" style="margin-bottom:12px" data-i18n="manage_sched_desc">Unlock Admin mode to add unavailable slots, edit details, or cancel/delete bookings.</p>
 
-          <form id="setUnavailableForm" style="display:grid;gap:10px">
+          <form id="setUnavailableForm" class="admin-only" style="display:grid;gap:10px">
             <input type="hidden" id="editingScheduleId">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div class="field" style="margin-bottom:0">
@@ -1144,10 +1168,10 @@ footer{
   <section class="page" id="announcements">
     <div class="eyebrow" data-i18n="ann_eyebrow">studio notices</div>
     <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="nav_announcements">Announcements</h1>
-    <p class="subtitle" data-i18n="ann_desc">Publish, edit, or remove announcements for clients and visitors.</p>
+    <p class="subtitle" data-i18n="ann_desc">Studio updates, booking notices, and announcements.</p>
 
     <div class="card" style="margin-top:18px">
-      <form id="announcementForm">
+      <form id="announcementForm" class="admin-only">
         <input type="hidden" id="editAnnounceId">
         <div class="field">
           <label for="announceTitle">Announcement Title</label>
@@ -1163,7 +1187,7 @@ footer{
         </div>
       </form>
 
-      <div id="announcementsList" style="margin-top:16px"></div>
+      <div id="announcementsList" style="margin-top:12px"></div>
     </div>
   </section>
 
@@ -1171,9 +1195,9 @@ footer{
   <section class="page" id="notes">
     <div class="eyebrow" data-i18n="notes_eyebrow">workspace scratchpad</div>
     <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="nav_notes">Notes</h1>
-    <p class="subtitle" data-i18n="notes_desc">Keep organized shoot notes, client briefs, lighting setups, or reminders.</p>
+    <p class="subtitle" data-i18n="notes_desc">Studio shoot notes, shot lists, and project reminders.</p>
 
-    <div class="card" style="margin-top:18px">
+    <div class="card admin-only" style="margin-top:18px">
       <form id="noteForm">
         <input type="hidden" id="editNoteId">
         <div class="field">
@@ -1234,14 +1258,14 @@ footer{
           <div id="revUploadPreview" class="review-photos"></div>
         </div>
 
-        <button type="submit" class="btn-primary">Submit Review</button>
+        <button type="submit" class="btn-primary" id="submitReviewBtn">Submit Review</button>
       </form>
 
       <div id="reviewsList"></div>
     </div>
   </section>
 
-  <!-- SETTINGS (Language Switcher, Appearance, Studio Info & Social Links) -->
+  <!-- SETTINGS -->
   <section class="page" id="settings">
     <div class="eyebrow" data-i18n="set_eyebrow">portal configuration</div>
     <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="nav_settings">Settings</h1>
@@ -1284,8 +1308,8 @@ footer{
         </div>
       </div>
 
-      <div class="card">
-        <h3 style="margin-bottom:10px" data-i18n="set_brand_title">Studio Profile &amp; Social Links</h3>
+      <div class="card admin-only">
+        <h3 style="margin-bottom:10px" data-i18n="set_brand_title">Studio Profile &amp; Social Links (Synced)</h3>
         <div class="field">
           <label for="setStudioName">Studio / Photographer Name</label>
           <input id="setStudioName" value="Rhandom Visuals">
@@ -1310,8 +1334,12 @@ footer{
           <label for="setTtUrl">TikTok Link</label>
           <input id="setTtUrl" type="text" placeholder="https://tiktok.com/@yourhandle">
         </div>
+        <div class="field">
+          <label for="setAdminPin">Admin PIN (Change default 1234)</label>
+          <input id="setAdminPin" type="text" placeholder="1234">
+        </div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <button type="button" class="btn-primary" id="savePortalSettingsBtn" data-i18n="save_btn">Save Settings</button>
+          <button type="button" class="btn-primary" id="savePortalSettingsBtn" data-i18n="save_btn">Save &amp; Sync Settings</button>
           <span class="subtitle" id="portalSettingsMsg" aria-live="polite"></span>
         </div>
       </div>
@@ -1340,330 +1368,182 @@ footer{
   <img id="lightboxImg" alt="Full size photo">
 </div>
 
-<script>
-(function () {
-  const $ = (id) => document.getElementById(id);
-  const uid = () => "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-  const todayISO = () => {
-    const d = new Date();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${d.getFullYear()}-${m}-${day}`;
-  };
+// =========================================================================
+// ILAGAY DITO ANG IYONG FIREBASE CONFIG MULA SA FIREBASE CONSOLE
+// =========================================================================
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAwv6RtaDR_7JL_QgDPPU4W8dpRJdtwsfo",
+  authDomain: "rhandom-visuals.firebaseapp.com",
+  projectId: "rhandom-visuals",
+  storageBucket: "rhandom-visuals.firebasestorage.app",
+  messagingSenderId: "598142073377",
+  appId: "1:598142073377:web:401c241bf250effd278160"
+};
+// =========================================================================
 
-  function normalizeUrl(raw) {
-    const val = String(raw || "").trim();
-    if (!val) return "";
-    if (/^https?:\/\//i.test(val)) return val;
-    return "https://" + val;
-  }
+const $ = (id) => document.getElementById(id);
+const uid = () => "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
 
-  // Translations (English & Tagalog)
-  const I18N = {
-    en: {
-      nav_home: "Home",
-      nav_profile: "Profile",
-      nav_albums: "Albums",
-      nav_calendar: "Calendar & Book",
-      nav_announcements: "Announcements",
-      nav_notes: "Notes",
-      nav_reviews: "Reviews",
-      nav_settings: "Settings",
-      home_eyebrow: "rhandom visuals · official client portal",
-      home_title: "Structured photography workflows, event albums, and live booking schedules.",
-      home_desc: "Manage event photo albums, check photographer date and time availability, publish announcements, keep studio notes, and collect verified client reviews with photos.",
-      home_cta_book: "Check Calendar & Book →",
-      home_cta_albums: "Event Albums",
-      home_cta_profile: "Profile & Socials",
-      slide_empty_title: "Event Gallery Slideshow",
-      slide_empty_desc: "Upload photos inside Event Albums to display an automatic showcase here.",
-      slide_empty_btn: "Go to Albums",
-      snap_albums: "Event Albums",
-      snap_photos: "Uploaded Photos",
-      snap_bookings: "Scheduled Bookings",
-      snap_reviews: "Client Reviews",
-      latest_updates: "latest updates",
-      manage_all: "Manage All",
-      schedule_avail: "schedule & availability",
-      booked_dates_title: "Booked / Unavailable Schedules",
-      open_calendar: "Open Calendar",
-      profile_eyebrow: "photographer & studio profile",
-      profile_title: "Profile & Social Channels",
-      profile_desc: "Connect directly with Rhandom Visuals on Facebook, Instagram, and TikTok.",
-      edit_links_btn: "Edit Links in Settings",
-      albums_eyebrow: "event galleries",
-      albums_desc: "Create an event album, rename it anytime, and upload event photos directly. Uploaded photos automatically appear in the Home slideshow.",
-      new_album_label: "New Event Album Name",
-      create_album_btn: "＋ Create Event Album",
-      cal_eyebrow: "schedule & reservations",
-      cal_title: "Booking Calendar & Availability",
-      cal_desc: "Supports Whole Day and Half-Day (Morning / Afternoon) bookings. If a morning slot is booked, afternoon slots remain open.",
-      monthly_sched: "monthly schedule",
-      client_req_eyebrow: "client booking request",
-      book_sched_title: "Book a Date & Time",
-      date_label: "Date",
-      time_slot_label: "Time Slot",
-      exact_time_label: "Specific Time (Optional)",
-      client_name_label: "Client Name",
-      event_type_label: "Event / Shoot Type",
-      submit_booking_btn: "Confirm Booking",
-      manage_sched_eyebrow: "bookings & unavailable dates",
-      manage_sched_title: "Manage / Cancel Bookings",
-      manage_sched_desc: "Set an unavailable schedule manually, edit an entry, or click Cancel / Delete if a client cancels.",
-      ann_eyebrow: "studio notices",
-      ann_desc: "Publish, edit, or remove announcements for clients and visitors.",
-      notes_eyebrow: "workspace scratchpad",
-      notes_desc: "Keep organized shoot notes, client briefs, lighting setups, or reminders.",
-      rev_eyebrow: "client feedback",
-      rev_title: "Client Reviews",
-      rev_desc: "Clients can leave a rating, comment, and upload photos from their shoot.",
-      leave_review: "Leave a Review",
-      set_eyebrow: "portal configuration",
-      set_desc: "Customize language, studio identity, social media links, and display theme.",
-      set_appearance: "Appearance & Language",
-      set_lang_label: "Website Language",
-      set_dark_label: "Dark Mode",
-      set_dark_sub: "Toggle dark or light studio surface",
-      set_sys_label: "Follow Device Theme",
-      set_sys_sub: "Match system light/dark mode",
-      set_font_label: "Heading Font Style",
-      set_brand_title: "Studio Profile & Social Links",
-      save_btn: "Save Settings"
-    },
-    tl: {
-      nav_home: "Home",
-      nav_profile: "Profile",
-      nav_albums: "Mga Album",
-      nav_calendar: "Kalendaryo at Book",
-      nav_announcements: "Anunsyo",
-      nav_notes: "Mga Tala",
-      nav_reviews: "Reviews",
-      nav_settings: "Settings",
-      home_eyebrow: "rhandom visuals · opisyal na portal",
-      home_title: "Maayos na event albums, live booking schedule, at studio portfolio.",
-      home_desc: "Mag-upload ng event photos, tingnan ang bakanteng petsa at oras ng photographer, mag-post ng anunsyo, at mag-iwan ng client reviews.",
-      home_cta_book: "Tingnan ang Kalendaryo →",
-      home_cta_albums: "Mga Event Album",
-      home_cta_profile: "Profile at Socials",
-      slide_empty_title: "Slideshow ng mga Larawan",
-      slide_empty_desc: "Mag-upload ng mga picture sa Event Albums para lumabas at mag-slideshow dito sa Home.",
-      slide_empty_btn: "Pumunta sa Albums",
-      snap_albums: "Mga Event Album",
-      snap_photos: "Na-upload na Larawan",
-      snap_bookings: "Mga Naka-book na Petsa",
-      snap_reviews: "Client Reviews",
-      latest_updates: "pinakabagong balita",
-      manage_all: "Tingnan Lahat",
-      schedule_avail: "iskedyul at availability",
-      booked_dates_title: "Mga Naka-book / Hindi Available",
-      open_calendar: "Buksan ang Kalendaryo",
-      profile_eyebrow: "profile ng photographer at studio",
-      profile_title: "Profile at Social Media",
-      profile_desc: "Bisitahin ang opisyal na Facebook, Instagram, at TikTok ng Rhandom Visuals.",
-      edit_links_btn: "I-edit ang Links sa Settings",
-      albums_eyebrow: "mga event gallery",
-      albums_desc: "Gumawa ng event album, palitan ang pangalan, at mag-upload ng mga larawan. Automatic na lalabas sa Home slideshow ang mga na-upload na picture.",
-      new_album_label: "Pangalan ng Bagong Event Album",
-      create_album_btn: "＋ Gumawa ng Event Album",
-      cal_eyebrow: "iskedyul at reserbasyon",
-      cal_title: "Kalendaryo at Pag-book",
-      cal_desc: "May Whole Day at Half-Day (Morning / Afternoon) booking. Kung morning lang ang naka-book, puwede pa magpa-book sa hapon.",
-      monthly_sched: "buwanang iskedyul",
-      client_req_eyebrow: "magpa-book ng shoot",
-      book_sched_title: "Pumili ng Petsa at Oras",
-      date_label: "Petsa",
-      time_slot_label: "Oras / Slot",
-      exact_time_label: "Eksaktong Oras (Opsyonal)",
-      client_name_label: "Pangalan ng Client",
-      event_type_label: "Uri ng Event / Shoot",
-      submit_booking_btn: "I-book ang Iskedyul",
-      manage_sched_eyebrow: "mga booking at hindi available na petsa",
-      manage_sched_title: "I-edit o I-cancel ang Booking",
-      manage_sched_desc: "Mag-set ng unavailable na petsa o i-click ang Cancel / Delete kung nag-cancel ang client.",
-      ann_eyebrow: "mga abiso ng studio",
-      ann_desc: "Mag-post, mag-edit, o mag-delete ng anunsyo para sa mga kliyente.",
-      notes_eyebrow: "mga tala sa trabaho",
-      notes_desc: "Mag-save ng mga paalala, shot list, o detalye ng kliyente.",
-      rev_eyebrow: "komento ng mga kliyente",
-      rev_title: "Client Reviews",
-      rev_desc: "Puwedeng mag-iwan ng rating, komento, at mag-upload ng mga larawan mula sa shoot.",
-      leave_review: "Mag-iwan ng Review",
-      set_eyebrow: "ayos ng portal",
-      set_desc: "Palitan ang wika, pangalan ng studio, social media links, at kulay ng website.",
-      set_appearance: "Hitsura at Wika",
-      set_lang_label: "Wika ng Website",
-      set_dark_label: "Dark Mode",
-      set_dark_sub: "Lumipat sa madilim o maliwanag na tema",
-      set_sys_label: "Sundan ang Tema ng Device",
-      set_sys_sub: "Ipares sa light/dark mode ng phone o PC",
-      set_font_label: "Istilo ng Font",
-      set_brand_title: "Impormasyon ng Studio at Social Links",
-      save_btn: "I-save ang Settings"
+const todayISO = () => {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+};
+
+function normalizeUrl(raw) {
+  const val = String(raw || "").trim();
+  if (!val) return "";
+  if (/^https?:\/\//i.test(val)) return val;
+  return "https://" + val;
+}
+
+// Local UI Preferences (per device)
+let localPrefs = {
+  lang: "en",
+  theme: "light",
+  systemTheme: false,
+  font: "editorial"
+};
+try {
+  const p = JSON.parse(localStorage.getItem("rhandomLocalPrefs") || "{}");
+  localPrefs = Object.assign({}, localPrefs, p);
+} catch (e) {}
+
+// Shared Cloud Studio State (Synced across all devices!)
+let sharedState = {
+  studioName: "Rhandom Visuals",
+  studioSub: "Client Studio Portal",
+  profileBio: "Delivering clean composition, natural lighting, and reliable coverage for events, portraits, and commercial projects.",
+  profilePhoto: "",
+  socialFacebook: "",
+  socialInstagram: "",
+  socialTiktok: "",
+  adminPin: "1234",
+  albums: [],
+  blockedDates: [],
+  announcements: [
+    {
+      id: "welcome_notice",
+      title: "Welcome to Rhandom Visuals",
+      body: "Check the Calendar & Book tab to reserve a Whole Day or Half-Day slot, view event albums, or leave a client review.",
+      createdAt: todayISO()
     }
-  };
+  ],
+  notes: [],
+  reviews: []
+};
 
-  // App State — Starts with ZERO bookings!
-  let state = {
-    lang: "en",
-    theme: "light",
-    systemTheme: false,
-    font: "editorial",
-    studioName: "Rhandom Visuals",
-    studioSub: "Client Studio Portal",
-    profileBio: "Delivering clean composition, natural lighting, and reliable coverage for events, portraits, and commercial projects.",
-    profilePhoto: "",
-    socialFacebook: "",
-    socialInstagram: "",
-    socialTiktok: "",
-    albums: [
-      { id: uid(), title: "Sample Event Folder", photos: [] }
-    ],
-    blockedDates: [], // EMPTY BY DEFAULT (walang booking sa simula)
-    announcements: [
-      {
-        id: uid(),
-        title: "Welcome to Rhandom Visuals",
-        body: "Check the Calendar & Book tab to reserve a Whole Day or Half-Day slot, view event albums, or post a client review.",
-        createdAt: todayISO()
-      }
-    ],
-    notes: [],
-    reviews: []
-  };
+// Load cached sharedState for instant display before cloud responds
+try {
+  const cached = JSON.parse(localStorage.getItem("rhandomSharedCache") || "null");
+  if (cached) sharedState = Object.assign({}, sharedState, cached);
+} catch (e) {}
 
+// Check if Firebase Config is filled
+const isFirebaseConfigured = Boolean(
+  FIREBASE_CONFIG.apiKey &&
+  !FIREBASE_CONFIG.apiKey.startsWith("PASTE_") &&
+  FIREBASE_CONFIG.projectId &&
+  !FIREBASE_CONFIG.projectId.startsWith("PASTE_")
+);
+
+let db = null;
+let storage = null;
+let portalDocRef = null;
+
+if (isFirebaseConfigured) {
   try {
-    const raw = localStorage.getItem("rhandomVisualsPortalV2");
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      state = Object.assign({}, state, parsed);
-    }
-  } catch (e) {}
+    const app = initializeApp(FIREBASE_CONFIG);
+    db = getFirestore(app);
+    storage = getStorage(app);
+    portalDocRef = doc(db, "rhandom_portal", "main_data");
 
-  function saveState() {
-    try {
-      localStorage.setItem("rhandomVisualsPortalV2", JSON.stringify(state));
-    } catch (e) {
-      alert("Browser storage limit reached. Try removing large uploaded photos.");
-    }
-    renderAll();
-  }
+    if ($("syncDot")) $("syncDot").classList.add("live");
+    if ($("syncStatusText")) $("syncStatusText").textContent = "Live Cloud Sync Active — Changes are visible to all visitors";
 
-  function escapeHtml(str) {
-    return String(str || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  // Apply Language
-  function applyLanguage() {
-    const dict = I18N[state.lang] || I18N.en;
-    document.documentElement.lang = state.lang || "en";
-    document.querySelectorAll("[data-i18n]").forEach((el) => {
-      const key = el.getAttribute("data-i18n");
-      if (dict[key]) el.textContent = dict[key];
-    });
-    if ($("languageSelect")) $("languageSelect").value = state.lang || "en";
-  }
-
-  // Theme & Appearance
-  function resolvedTheme() {
-    if (state.systemTheme && window.matchMedia) {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    }
-    return state.theme || "light";
-  }
-
-  function applyTheme() {
-    const t = resolvedTheme();
-    document.documentElement.setAttribute("data-theme", t);
-    document.documentElement.setAttribute("data-font", state.font || "editorial");
-
-    if ($("quickThemeBtn")) $("quickThemeBtn").textContent = t === "dark" ? "☀ Light" : "☾ Dark";
-    if ($("darkSwitch")) $("darkSwitch").classList.toggle("on", t === "dark");
-    if ($("systemSwitch")) $("systemSwitch").classList.toggle("on", Boolean(state.systemTheme));
-    if ($("fontChoiceSelect")) $("fontChoiceSelect").value = state.font || "editorial";
-  }
-
-  function toggleTheme() {
-    state.systemTheme = false;
-    state.theme = resolvedTheme() === "dark" ? "light" : "dark";
-    saveState();
-  }
-
-  if ($("quickThemeBtn")) $("quickThemeBtn").addEventListener("click", toggleTheme);
-  if ($("darkSwitch")) $("darkSwitch").addEventListener("click", toggleTheme);
-  if ($("systemSwitch")) {
-    $("systemSwitch").addEventListener("click", () => {
-      state.systemTheme = !state.systemTheme;
-      saveState();
-    });
-  }
-  if ($("languageSelect")) {
-    $("languageSelect").addEventListener("change", (e) => {
-      state.lang = e.target.value;
-      saveState();
-    });
-  }
-  if ($("fontChoiceSelect")) {
-    $("fontChoiceSelect").addEventListener("change", (e) => {
-      state.font = e.target.value;
-      saveState();
-    });
-  }
-
-  if ($("savePortalSettingsBtn")) {
-    $("savePortalSettingsBtn").addEventListener("click", () => {
-      state.lang = ($("languageSelect") && $("languageSelect").value) || state.lang;
-      state.studioName = ($("setStudioName").value || "").trim() || "Rhandom Visuals";
-      state.studioSub = ($("setStudioSub").value || "").trim() || "Client Studio Portal";
-      state.profileBio = ($("setProfileBio").value || "").trim() || state.profileBio;
-      state.socialFacebook = ($("setFbUrl").value || "").trim();
-      state.socialInstagram = ($("setIgUrl").value || "").trim();
-      state.socialTiktok = ($("setTtUrl").value || "").trim();
-      saveState();
-      if ($("portalSettingsMsg")) {
-        $("portalSettingsMsg").textContent = state.lang === "tl" ? "Na-save na." : "Settings saved.";
+    onSnapshot(portalDocRef, (snap) => {
+      if (snap.exists()) {
+        sharedState = Object.assign({}, sharedState, snap.data());
+        try { localStorage.setItem("rhandomSharedCache", JSON.stringify(sharedState)); } catch (e) {}
+        renderAll();
+      } else {
+        setDoc(portalDocRef, sharedState).catch(() => {});
       }
     });
+  } catch (err) {
+    if ($("syncStatusText")) $("syncStatusText").textContent = "Firebase Config Error — Check your keys in index.html";
   }
+}
 
-  // Page Navigation
-  function showPage(pageId) {
-    if (!$(pageId)) return;
-    document.querySelectorAll(".page").forEach((p) => p.classList.toggle("active", p.id === pageId));
-    document.querySelectorAll("[data-page]").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.page === pageId);
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+async function saveSharedState() {
+  try { localStorage.setItem("rhandomSharedCache", JSON.stringify(sharedState)); } catch (e) {}
+  renderAll();
+  if (portalDocRef) {
+    try {
+      await setDoc(portalDocRef, sharedState);
+    } catch (err) {
+      alert("Cloud sync failed. Check Firestore rules or internet connection.");
+    }
   }
-  document.querySelectorAll("[data-page]").forEach((btn) => {
-    btn.addEventListener("click", () => showPage(btn.dataset.page));
+}
+
+function saveLocalPrefs() {
+  try { localStorage.setItem("rhandomLocalPrefs", JSON.stringify(localPrefs)); } catch (e) {}
+  renderAll();
+}
+
+// =========================================================
+// ADMIN PIN LOCK (Default PIN: 1234)
+// =========================================================
+let isAdmin = sessionStorage.getItem("rhandomIsAdmin") === "1";
+
+function updateAdminUI() {
+  document.body.classList.toggle("is-admin", isAdmin);
+  const btn = $("adminAuthBtn");
+  if (btn) {
+    btn.textContent = isAdmin ? "🔓 Admin (Active)" : "🔒 Admin";
+    btn.classList.toggle("admin-on", isAdmin);
+  }
+}
+
+if ($("adminAuthBtn")) {
+  $("adminAuthBtn").addEventListener("click", () => {
+    if (isAdmin) {
+      isAdmin = false;
+      sessionStorage.removeItem("rhandomIsAdmin");
+      updateAdminUI();
+      renderAll();
+      return;
+    }
+    const entered = prompt("Enter Admin PIN (default is 1234):");
+    if (entered === null) return;
+    if (entered === String(sharedState.adminPin || "1234")) {
+      isAdmin = true;
+      sessionStorage.setItem("rhandomIsAdmin", "1");
+      updateAdminUI();
+      renderAll();
+    } else {
+      alert("Incorrect Admin PIN.");
+    }
   });
+}
 
-  // Lightbox
-  function openLightbox(src) {
-    if (!src || !$("lightbox") || !$("lightboxImg")) return;
-    $("lightboxImg").src = src;
-    $("lightbox").classList.add("open");
-  }
-  function closeLightbox() {
-    if ($("lightbox")) $("lightbox").classList.remove("open");
-  }
-  if ($("lightboxClose")) $("lightboxClose").addEventListener("click", closeLightbox);
-  if ($("lightbox")) {
-    $("lightbox").addEventListener("click", (e) => {
-      if (e.target === $("lightbox")) closeLightbox();
-    });
-  }
-
-  // Image Compressor
-  function compressImage(file, maxDim, cb) {
+// =========================================================
+// IMAGE COMPRESSION + CLOUD UPLOAD HELPER
+// =========================================================
+function compressToBlob(file, maxDim) {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Read error"));
     reader.onload = (ev) => {
       const img = new Image();
+      img.onerror = () => reject(new Error("Invalid image"));
       img.onload = () => {
         let w = img.width, h = img.height;
         if (w > maxDim || h > maxDim) {
@@ -1674,184 +1554,458 @@ footer{
         canvas.width = w;
         canvas.height = h;
         canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-        cb(canvas.toDataURL("image/jpeg", 0.84));
+        canvas.toBlob(
+          (blob) => resolve({ blob, dataUrl: canvas.toDataURL("image/jpeg", 0.82) }),
+          "image/jpeg",
+          0.82
+        );
       };
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
+  });
+}
+
+async function uploadImageAsset(file, folderPath, maxDim = 1080) {
+  const { blob, dataUrl } = await compressToBlob(file, maxDim);
+  if (storage && blob) {
+    const fileRef = ref(storage, `${folderPath}/${Date.now()}_${Math.random().toString(36).slice(2, 7)}.jpg`);
+    await uploadBytes(fileRef, blob, { contentType: "image/jpeg" });
+    return await getDownloadURL(fileRef);
   }
+  return dataUrl;
+}
 
-  // =========================================================
-  // HOME AUTO-SLIDESHOW (From Uploaded Event Album Photos)
-  // =========================================================
-  let slideIndex = 0;
-  let slideTimer = null;
-
-  function getAllAlbumSlides() {
-    const slides = [];
-    (state.albums || []).forEach((alb) => {
-      (alb.photos || []).forEach((ph) => {
-        if (ph && ph.src) {
-          slides.push({ src: ph.src, albumTitle: alb.title });
-        }
-      });
-    });
-    return slides;
+// =========================================================
+// TRANSLATIONS (English & Tagalog)
+// =========================================================
+const I18N = {
+  en: {
+    nav_home: "Home",
+    nav_profile: "Profile",
+    nav_albums: "Albums",
+    nav_calendar: "Calendar & Book",
+    nav_announcements: "Announcements",
+    nav_notes: "Notes",
+    nav_reviews: "Reviews",
+    nav_settings: "Settings",
+    home_eyebrow: "rhandom visuals · official client portal",
+    home_title: "Structured photography workflows, event albums, and live booking schedules.",
+    home_desc: "View event photo albums, check photographer date and time availability, read announcements, and leave verified client reviews with photos.",
+    home_cta_book: "Check Calendar & Book →",
+    home_cta_albums: "Event Albums",
+    home_cta_profile: "Profile & Socials",
+    slide_empty_title: "Event Gallery Slideshow",
+    slide_empty_desc: "Upload photos inside Event Albums to display an automatic showcase here.",
+    slide_empty_btn: "Go to Albums",
+    snap_albums: "Event Albums",
+    snap_photos: "Uploaded Photos",
+    snap_bookings: "Scheduled Bookings",
+    snap_reviews: "Client Reviews",
+    latest_updates: "latest updates",
+    manage_all: "View All",
+    schedule_avail: "schedule & availability",
+    booked_dates_title: "Booked / Unavailable Schedules",
+    open_calendar: "Open Calendar",
+    profile_eyebrow: "photographer & studio profile",
+    profile_title: "Profile & Social Channels",
+    profile_desc: "Connect directly with Rhandom Visuals on Facebook, Instagram, and TikTok.",
+    edit_links_btn: "Edit Links in Settings",
+    albums_eyebrow: "event galleries",
+    albums_desc: "Browse event albums or unlock Admin mode to create albums, rename them, and upload photos that sync across all devices.",
+    new_album_label: "New Event Album Name",
+    create_album_btn: "＋ Create Event Album",
+    cal_eyebrow: "schedule & reservations",
+    cal_title: "Booking Calendar & Availability",
+    cal_desc: "Supports Whole Day and Half-Day (Morning / Afternoon) bookings. If a morning slot is booked, afternoon slots remain open.",
+    monthly_sched: "monthly schedule",
+    client_req_eyebrow: "client booking request",
+    book_sched_title: "Book a Date & Time",
+    date_label: "Date",
+    time_slot_label: "Time Slot",
+    exact_time_label: "Specific Time (Optional)",
+    client_name_label: "Client Name",
+    event_type_label: "Event / Shoot Type",
+    submit_booking_btn: "Confirm Booking",
+    manage_sched_eyebrow: "bookings & unavailable dates",
+    manage_sched_title: "Scheduled Bookings",
+    manage_sched_desc: "Unlock Admin mode to add unavailable slots, edit details, or cancel/delete bookings.",
+    ann_eyebrow: "studio notices",
+    ann_desc: "Studio updates, booking notices, and announcements.",
+    notes_eyebrow: "workspace scratchpad",
+    notes_desc: "Studio shoot notes, shot lists, and project reminders.",
+    rev_eyebrow: "client feedback",
+    rev_title: "Client Reviews",
+    rev_desc: "Clients can leave a rating, comment, and upload photos from their shoot.",
+    leave_review: "Leave a Review",
+    set_eyebrow: "portal configuration",
+    set_desc: "Customize language, studio identity, social media links, and display theme.",
+    set_appearance: "Appearance & Language",
+    set_lang_label: "Website Language",
+    set_dark_label: "Dark Mode",
+    set_dark_sub: "Toggle dark or light studio surface",
+    set_sys_label: "Follow Device Theme",
+    set_sys_sub: "Match system light/dark mode",
+    set_font_label: "Heading Font Style",
+    set_brand_title: "Studio Profile & Social Links (Synced)",
+    save_btn: "Save & Sync Settings"
+  },
+  tl: {
+    nav_home: "Home",
+    nav_profile: "Profile",
+    nav_albums: "Mga Album",
+    nav_calendar: "Kalendaryo at Book",
+    nav_announcements: "Anunsyo",
+    nav_notes: "Mga Tala",
+    nav_reviews: "Reviews",
+    nav_settings: "Settings",
+    home_eyebrow: "rhandom visuals · opisyal na portal",
+    home_title: "Maayos na event albums, live booking schedule, at studio portfolio.",
+    home_desc: "Tingnan ang event photos, bakanteng petsa at oras ng photographer, mga anunsyo, at mag-iwan ng client reviews.",
+    home_cta_book: "Tingnan ang Kalendaryo →",
+    home_cta_albums: "Mga Event Album",
+    home_cta_profile: "Profile at Socials",
+    slide_empty_title: "Slideshow ng mga Larawan",
+    slide_empty_desc: "Mag-upload ng mga picture sa Event Albums para lumabas at mag-slideshow dito sa Home.",
+    slide_empty_btn: "Pumunta sa Albums",
+    snap_albums: "Mga Event Album",
+    snap_photos: "Na-upload na Larawan",
+    snap_bookings: "Mga Naka-book na Petsa",
+    snap_reviews: "Client Reviews",
+    latest_updates: "pinakabagong balita",
+    manage_all: "Tingnan Lahat",
+    schedule_avail: "iskedyul at availability",
+    booked_dates_title: "Mga Naka-book / Hindi Available",
+    open_calendar: "Buksan ang Kalendaryo",
+    profile_eyebrow: "profile ng photographer at studio",
+    profile_title: "Profile at Social Media",
+    profile_desc: "Bisitahin ang opisyal na Facebook, Instagram, at TikTok ng Rhandom Visuals.",
+    edit_links_btn: "I-edit ang Links sa Settings",
+    albums_eyebrow: "mga event gallery",
+    albums_desc: "Tingnan ang event albums o buksan ang Admin mode para gumawa ng album, mag-rename, at mag-upload ng photos na naka-sync sa lahat.",
+    new_album_label: "Pangalan ng Bagong Event Album",
+    create_album_btn: "＋ Gumawa ng Event Album",
+    cal_eyebrow: "iskedyul at reserbasyon",
+    cal_title: "Kalendaryo at Pag-book",
+    cal_desc: "May Whole Day at Half-Day (Morning / Afternoon) booking. Kung morning lang ang naka-book, puwede pa magpa-book sa hapon.",
+    monthly_sched: "buwanang iskedyul",
+    client_req_eyebrow: "magpa-book ng shoot",
+    book_sched_title: "Pumili ng Petsa at Oras",
+    date_label: "Petsa",
+    time_slot_label: "Oras / Slot",
+    exact_time_label: "Eksaktong Oras (Opsyonal)",
+    client_name_label: "Pangalan ng Client",
+    event_type_label: "Uri ng Event / Shoot",
+    submit_booking_btn: "I-book ang Iskedyul",
+    manage_sched_eyebrow: "mga booking at hindi available na petsa",
+    manage_sched_title: "Mga Naka-book na Iskedyul",
+    manage_sched_desc: "Buksan ang Admin mode para mag-set ng unavailable slot, mag-edit, o mag-cancel ng booking.",
+    ann_eyebrow: "mga abiso ng studio",
+    ann_desc: "Mga anunsyo at abiso mula sa Rhandom Visuals.",
+    notes_eyebrow: "mga tala sa trabaho",
+    notes_desc: "Mga paalala, shot list, at detalye ng kliyente.",
+    rev_eyebrow: "komento ng mga kliyente",
+    rev_title: "Client Reviews",
+    rev_desc: "Puwedeng mag-iwan ng rating, komento, at mag-upload ng mga larawan mula sa shoot.",
+    leave_review: "Mag-iwan ng Review",
+    set_eyebrow: "ayos ng portal",
+    set_desc: "Palitan ang wika, pangalan ng studio, social media links, at kulay ng website.",
+    set_appearance: "Hitsura at Wika",
+    set_lang_label: "Wika ng Website",
+    set_dark_label: "Dark Mode",
+    set_dark_sub: "Lumipat sa madilim o maliwanag na tema",
+    set_sys_label: "Sundan ang Tema ng Device",
+    set_sys_sub: "Ipares sa light/dark mode ng phone o PC",
+    set_font_label: "Istilo ng Font",
+    set_brand_title: "Impormasyon ng Studio at Social Links (Synced)",
+    save_btn: "I-save at I-sync"
   }
+};
 
-  function showSlideAt(idx) {
-    const slides = getAllAlbumSlides();
-    const emptyEl = $("slideEmptyState");
-    const imgEl = $("slideActiveImg");
-    const overlayEl = $("slideOverlay");
+function escapeHtml(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
-    if (!emptyEl || !imgEl || !overlayEl) return;
+function applyLanguage() {
+  const dict = I18N[localPrefs.lang] || I18N.en;
+  document.documentElement.lang = localPrefs.lang || "en";
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (dict[key]) el.textContent = dict[key];
+  });
+  if ($("languageSelect")) $("languageSelect").value = localPrefs.lang || "en";
+}
 
-    if (!slides.length) {
-      emptyEl.style.display = "grid";
-      imgEl.style.display = "none";
-      overlayEl.style.display = "none";
-      clearInterval(slideTimer);
-      return;
+function resolvedTheme() {
+  if (localPrefs.systemTheme && window.matchMedia) {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  return localPrefs.theme || "light";
+}
+
+function applyTheme() {
+  const t = resolvedTheme();
+  document.documentElement.setAttribute("data-theme", t);
+  document.documentElement.setAttribute("data-font", localPrefs.font || "editorial");
+
+  if ($("quickThemeBtn")) $("quickThemeBtn").textContent = t === "dark" ? "☀ Light" : "☾ Dark";
+  if ($("darkSwitch")) $("darkSwitch").classList.toggle("on", t === "dark");
+  if ($("systemSwitch")) $("systemSwitch").classList.toggle("on", Boolean(localPrefs.systemTheme));
+  if ($("fontChoiceSelect")) $("fontChoiceSelect").value = localPrefs.font || "editorial";
+}
+
+function toggleTheme() {
+  localPrefs.systemTheme = false;
+  localPrefs.theme = resolvedTheme() === "dark" ? "light" : "dark";
+  saveLocalPrefs();
+}
+
+if ($("quickThemeBtn")) $("quickThemeBtn").addEventListener("click", toggleTheme);
+if ($("darkSwitch")) $("darkSwitch").addEventListener("click", toggleTheme);
+if ($("systemSwitch")) {
+  $("systemSwitch").addEventListener("click", () => {
+    localPrefs.systemTheme = !localPrefs.systemTheme;
+    saveLocalPrefs();
+  });
+}
+if ($("languageSelect")) {
+  $("languageSelect").addEventListener("change", (e) => {
+    localPrefs.lang = e.target.value;
+    saveLocalPrefs();
+  });
+}
+if ($("fontChoiceSelect")) {
+  $("fontChoiceSelect").addEventListener("change", (e) => {
+    localPrefs.font = e.target.value;
+    saveLocalPrefs();
+  });
+}
+
+if ($("savePortalSettingsBtn")) {
+  $("savePortalSettingsBtn").addEventListener("click", async () => {
+    if (!isAdmin) return;
+    sharedState.studioName = ($("setStudioName").value || "").trim() || "Rhandom Visuals";
+    sharedState.studioSub = ($("setStudioSub").value || "").trim() || "Client Studio Portal";
+    sharedState.profileBio = ($("setProfileBio").value || "").trim() || sharedState.profileBio;
+    sharedState.socialFacebook = ($("setFbUrl").value || "").trim();
+    sharedState.socialInstagram = ($("setIgUrl").value || "").trim();
+    sharedState.socialTiktok = ($("setTtUrl").value || "").trim();
+    const newPin = ($("setAdminPin").value || "").trim();
+    if (newPin) sharedState.adminPin = newPin;
+
+    await saveSharedState();
+    if ($("portalSettingsMsg")) {
+      $("portalSettingsMsg").textContent = localPrefs.lang === "tl" ? "Na-save at naka-sync na!" : "Saved & synced!";
     }
+  });
+}
 
-    slideIndex = ((idx % slides.length) + slides.length) % slides.length;
-    const current = slides[slideIndex];
+// Page Navigation
+function showPage(pageId) {
+  if (!$(pageId)) return;
+  document.querySelectorAll(".page").forEach((p) => p.classList.toggle("active", p.id === pageId));
+  document.querySelectorAll("[data-page]").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.page === pageId);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.querySelectorAll("[data-page]").forEach((btn) => {
+  btn.addEventListener("click", () => showPage(btn.dataset.page));
+});
 
-    emptyEl.style.display = "none";
-    imgEl.style.display = "block";
-    overlayEl.style.display = "flex";
+// Lightbox
+function openLightbox(src) {
+  if (!src || !$("lightbox") || !$("lightboxImg")) return;
+  $("lightboxImg").src = src;
+  $("lightbox").classList.add("open");
+}
+function closeLightbox() {
+  if ($("lightbox")) $("lightbox").classList.remove("open");
+}
+if ($("lightboxClose")) $("lightboxClose").addEventListener("click", closeLightbox);
+if ($("lightbox")) {
+  $("lightbox").addEventListener("click", (e) => {
+    if (e.target === $("lightbox")) closeLightbox();
+  });
+}
 
-    imgEl.src = current.src;
-    imgEl.onclick = () => openLightbox(current.src);
-    if ($("slideAlbumTitle")) $("slideAlbumTitle").textContent = current.albumTitle;
-    if ($("slideCounterText")) $("slideCounterText").textContent = `${slideIndex + 1} / ${slides.length}`;
-  }
+// =========================================================
+// HOME AUTO-SLIDESHOW
+// =========================================================
+let slideIndex = 0;
+let slideTimer = null;
 
-  function startSlideshowLoop() {
+function getAllAlbumSlides() {
+  const slides = [];
+  (sharedState.albums || []).forEach((alb) => {
+    (alb.photos || []).forEach((ph) => {
+      if (ph && ph.src) slides.push({ src: ph.src, albumTitle: alb.title });
+    });
+  });
+  return slides;
+}
+
+function showSlideAt(idx) {
+  const slides = getAllAlbumSlides();
+  const emptyEl = $("slideEmptyState");
+  const imgEl = $("slideActiveImg");
+  const overlayEl = $("slideOverlay");
+  if (!emptyEl || !imgEl || !overlayEl) return;
+
+  if (!slides.length) {
+    emptyEl.style.display = "grid";
+    imgEl.style.display = "none";
+    overlayEl.style.display = "none";
     clearInterval(slideTimer);
-    const slides = getAllAlbumSlides();
-    showSlideAt(slideIndex);
-    if (slides.length > 1) {
-      slideTimer = setInterval(() => {
-        showSlideAt(slideIndex + 1);
-      }, 3600);
+    return;
+  }
+
+  slideIndex = ((idx % slides.length) + slides.length) % slides.length;
+  const current = slides[slideIndex];
+
+  emptyEl.style.display = "none";
+  imgEl.style.display = "block";
+  overlayEl.style.display = "flex";
+
+  imgEl.src = current.src;
+  imgEl.onclick = () => openLightbox(current.src);
+  if ($("slideAlbumTitle")) $("slideAlbumTitle").textContent = current.albumTitle;
+  if ($("slideCounterText")) $("slideCounterText").textContent = `${slideIndex + 1} / ${slides.length}`;
+}
+
+function startSlideshowLoop() {
+  clearInterval(slideTimer);
+  const slides = getAllAlbumSlides();
+  showSlideAt(slideIndex);
+  if (slides.length > 1) {
+    slideTimer = setInterval(() => showSlideAt(slideIndex + 1), 3600);
+  }
+}
+
+if ($("slidePrevBtn")) {
+  $("slidePrevBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    showSlideAt(slideIndex - 1);
+    startSlideshowLoop();
+  });
+}
+if ($("slideNextBtn")) {
+  $("slideNextBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    showSlideAt(slideIndex + 1);
+    startSlideshowLoop();
+  });
+}
+
+// =========================================================
+// PROFILE PHOTO & SOCIAL REDIRECT BUTTONS (Synced!)
+// =========================================================
+if ($("profilePhotoInput")) {
+  $("profilePhotoInput").addEventListener("change", async (ev) => {
+    if (!isAdmin) return;
+    const file = ev.target.files && ev.target.files[0];
+    if (!file) return;
+    try {
+      const url = await uploadImageAsset(file, "profile", 600);
+      sharedState.profilePhoto = url;
+      await saveSharedState();
+    } catch (e) {
+      alert("Failed to upload profile photo.");
     }
-  }
+    ev.target.value = "";
+  });
+}
 
-  if ($("slidePrevBtn")) {
-    $("slidePrevBtn").addEventListener("click", (e) => {
-      e.stopPropagation();
-      showSlideAt(slideIndex - 1);
-      startSlideshowLoop();
-    });
+function configureSocialButton(btnEl, rawUrl) {
+  if (!btnEl) return;
+  const clean = normalizeUrl(rawUrl);
+  if (clean) {
+    btnEl.href = clean;
+    btnEl.classList.remove("unset");
+    btnEl.removeAttribute("aria-disabled");
+  } else {
+    btnEl.href = "#";
+    btnEl.classList.add("unset");
+    btnEl.setAttribute("aria-disabled", "true");
   }
-  if ($("slideNextBtn")) {
-    $("slideNextBtn").addEventListener("click", (e) => {
-      e.stopPropagation();
-      showSlideAt(slideIndex + 1);
-      startSlideshowLoop();
-    });
-  }
+}
 
-  // =========================================================
-  // PROFILE PHOTO & SOCIAL REDIRECT BUTTONS (FB, IG, TIKTOK)
-  // =========================================================
-  if ($("profilePhotoInput")) {
-    $("profilePhotoInput").addEventListener("change", (ev) => {
-      const file = ev.target.files && ev.target.files[0];
-      if (!file) return;
-      compressImage(file, 600, (dataUrl) => {
-        state.profilePhoto = dataUrl;
-        saveState();
-      });
-      ev.target.value = "";
-    });
-  }
-
-  function configureSocialButton(btnEl, rawUrl) {
-    if (!btnEl) return;
-    const clean = normalizeUrl(rawUrl);
-    if (clean) {
-      btnEl.href = clean;
-      btnEl.classList.remove("unset");
-      btnEl.removeAttribute("aria-disabled");
+function renderProfile() {
+  const box = $("profileAvatarBox");
+  const img = $("profilePhotoImg");
+  if (box && img) {
+    if (sharedState.profilePhoto) {
+      img.src = sharedState.profilePhoto;
+      box.classList.add("has-img");
     } else {
-      btnEl.href = "#";
-      btnEl.classList.add("unset");
-      btnEl.setAttribute("aria-disabled", "true");
+      img.removeAttribute("src");
+      box.classList.remove("has-img");
     }
   }
 
-  function renderProfile() {
-    const box = $("profileAvatarBox");
-    const img = $("profilePhotoImg");
-    if (box && img) {
-      if (state.profilePhoto) {
-        img.src = state.profilePhoto;
-        box.classList.add("has-img");
-      } else {
-        img.removeAttribute("src");
-        box.classList.remove("has-img");
-      }
-    }
+  if ($("profileNameDisplay")) $("profileNameDisplay").textContent = sharedState.studioName || "Rhandom Visuals";
+  if ($("profileRoleDisplay")) $("profileRoleDisplay").textContent = `Photographer · ${sharedState.studioName || "Rhandom Visuals"}`;
+  if ($("profileBioDisplay")) $("profileBioDisplay").textContent = sharedState.profileBio || "";
 
-    if ($("profileNameDisplay")) $("profileNameDisplay").textContent = state.studioName || "Rhandom Visuals";
-    if ($("profileRoleDisplay")) $("profileRoleDisplay").textContent = `Photographer · ${state.studioName || "Rhandom Visuals"}`;
-    if ($("profileBioDisplay")) $("profileBioDisplay").textContent = state.profileBio || "";
+  configureSocialButton($("fbSocialBtn"), sharedState.socialFacebook);
+  configureSocialButton($("igSocialBtn"), sharedState.socialInstagram);
+  configureSocialButton($("ttSocialBtn"), sharedState.socialTiktok);
+}
 
-    configureSocialButton($("fbSocialBtn"), state.socialFacebook);
-    configureSocialButton($("igSocialBtn"), state.socialInstagram);
-    configureSocialButton($("ttSocialBtn"), state.socialTiktok);
+// =========================================================
+// EVENT ALBUMS (Synced!)
+// =========================================================
+if ($("createAlbumForm")) {
+  $("createAlbumForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+    const title = ($("newAlbumName").value || "").trim();
+    if (!title) return;
+    sharedState.albums.unshift({ id: uid(), title, photos: [] });
+    $("newAlbumName").value = "";
+    await saveSharedState();
+  });
+}
+
+function renderAlbums() {
+  const container = $("albumsContainer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  if (!sharedState.albums.length) {
+    container.innerHTML = '<div class="empty-box" style="grid-column:1/-1">No event albums published yet.</div>';
+    return;
   }
 
-  // =========================================================
-  // EVENT ALBUMS (Create, Rename, Upload Photos, Delete)
-  // =========================================================
-  if ($("createAlbumForm")) {
-    $("createAlbumForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const title = ($("newAlbumName").value || "").trim();
-      if (!title) return;
-      state.albums.unshift({ id: uid(), title, photos: [] });
-      $("newAlbumName").value = "";
-      saveState();
-    });
-  }
+  sharedState.albums.forEach((album) => {
+    const box = document.createElement("div");
+    box.className = "album-box";
+    box.id = "album_" + album.id;
 
-  function renderAlbums() {
-    const container = $("albumsContainer");
-    if (!container) return;
-    container.innerHTML = "";
+    const header = document.createElement("div");
+    header.className = "album-header";
 
-    if (!state.albums.length) {
-      container.innerHTML = '<div class="empty-box" style="grid-column:1/-1">No event albums yet. Create one above to start uploading event photos.</div>';
-      return;
-    }
+    const titleWrap = document.createElement("div");
+    titleWrap.innerHTML = `<div class="eyebrow">${(album.photos || []).length} photo(s)</div><h3 class="album-title">${escapeHtml(album.title)}</h3>`;
+    header.appendChild(titleWrap);
 
-    state.albums.forEach((album) => {
-      const box = document.createElement("div");
-      box.className = "album-box";
-      box.id = "album_" + album.id;
-
-      const header = document.createElement("div");
-      header.className = "album-header";
-
-      const titleWrap = document.createElement("div");
-      titleWrap.innerHTML = `<div class="eyebrow">${album.photos.length} photo(s)</div><h3 class="album-title">${escapeHtml(album.title)}</h3>`;
-
+    if (isAdmin) {
       const controls = document.createElement("div");
       controls.className = "album-controls";
 
       const renameBtn = document.createElement("button");
       renameBtn.type = "button";
       renameBtn.className = "btn-small";
-      renameBtn.textContent = state.lang === "tl" ? "Palitan ang Pangalan" : "Rename";
-      renameBtn.addEventListener("click", () => {
+      renameBtn.textContent = localPrefs.lang === "tl" ? "Palitan ang Pangalan" : "Rename";
+      renameBtn.addEventListener("click", async () => {
         const nextName = prompt("Enter new event album name:", album.title);
         if (nextName && nextName.trim()) {
           album.title = nextName.trim();
-          saveState();
+          await saveSharedState();
         }
       });
 
@@ -1860,22 +2014,24 @@ footer{
       uploadLabel.style.background = "var(--btn-bg)";
       uploadLabel.style.color = "var(--btn-text)";
       uploadLabel.style.cursor = "pointer";
-      uploadLabel.textContent = state.lang === "tl" ? "＋ Mag-upload ng Pic" : "＋ Upload Photos";
+      uploadLabel.textContent = localPrefs.lang === "tl" ? "＋ Mag-upload ng Pic" : "＋ Upload Photos";
 
       const fileInput = document.createElement("input");
       fileInput.type = "file";
       fileInput.accept = "image/*";
       fileInput.multiple = true;
       fileInput.style.display = "none";
-      fileInput.addEventListener("change", (ev) => {
+      fileInput.addEventListener("change", async (ev) => {
         const files = Array.from(ev.target.files || []);
-        files.forEach((file) => {
-          compressImage(file, 1024, (dataUrl) => {
-            album.photos.push({ id: uid(), src: dataUrl, name: file.name });
-            saveState();
-          });
-        });
+        if (!files.length) return;
+        uploadLabel.textContent = "Uploading...";
+        for (const file of files) {
+          const url = await uploadImageAsset(file, `albums/${album.id}`, 1080);
+          album.photos = album.photos || [];
+          album.photos.push({ id: uid(), src: url, name: file.name });
+        }
         ev.target.value = "";
+        await saveSharedState();
       });
       uploadLabel.appendChild(fileInput);
 
@@ -1883,294 +2039,294 @@ footer{
       delAlbumBtn.type = "button";
       delAlbumBtn.className = "btn-small danger";
       delAlbumBtn.textContent = "Delete";
-      delAlbumBtn.addEventListener("click", () => {
+      delAlbumBtn.addEventListener("click", async () => {
         if (confirm(`Delete album "${album.title}"?`)) {
-          state.albums = state.albums.filter((a) => a.id !== album.id);
-          saveState();
+          sharedState.albums = sharedState.albums.filter((a) => a.id !== album.id);
+          await saveSharedState();
         }
       });
 
       controls.appendChild(renameBtn);
       controls.appendChild(uploadLabel);
       controls.appendChild(delAlbumBtn);
-
-      header.appendChild(titleWrap);
       header.appendChild(controls);
-      box.appendChild(header);
+    }
 
-      if (!album.photos.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty-box";
-        empty.textContent = state.lang === "tl"
-          ? "Wala pang larawan sa album na ito. I-click ang \"＋ Mag-upload ng Pic\"."
-          : "No photos uploaded in this event album yet. Tap \"＋ Upload Photos\" to add.";
-        box.appendChild(empty);
-      } else {
-        const grid = document.createElement("div");
-        grid.className = "album-photos";
-        album.photos.forEach((ph) => {
-          const item = document.createElement("div");
-          item.className = "album-photo";
+    box.appendChild(header);
 
-          const img = document.createElement("img");
-          img.src = ph.src;
-          img.alt = ph.name || album.title;
-          img.addEventListener("click", () => openLightbox(ph.src));
+    if (!album.photos || !album.photos.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty-box";
+      empty.textContent = "No photos uploaded in this event album yet.";
+      box.appendChild(empty);
+    } else {
+      const grid = document.createElement("div");
+      grid.className = "album-photos";
+      album.photos.forEach((ph) => {
+        const item = document.createElement("div");
+        item.className = "album-photo";
 
+        const img = document.createElement("img");
+        img.src = ph.src;
+        img.alt = ph.name || album.title;
+        img.addEventListener("click", () => openLightbox(ph.src));
+        item.appendChild(img);
+
+        if (isAdmin) {
           const rm = document.createElement("button");
           rm.type = "button";
           rm.className = "album-photo-del";
           rm.textContent = "✕";
-          rm.addEventListener("click", (e) => {
+          rm.addEventListener("click", async (e) => {
             e.stopPropagation();
             album.photos = album.photos.filter((p) => p.id !== ph.id);
-            saveState();
+            await saveSharedState();
           });
-
-          item.appendChild(img);
           item.appendChild(rm);
-          grid.appendChild(item);
-        });
-        box.appendChild(grid);
-      }
-
-      container.appendChild(box);
-    });
-  }
-
-  // =========================================================
-  // CALENDAR + HALF-DAY/WHOLE-DAY TIME SLOTS + CANCEL/DELETE
-  // =========================================================
-  let viewYear = new Date().getFullYear();
-  let viewMonth = new Date().getMonth();
-  let selectedDateISO = todayISO();
-
-  function getBookingsForDate(iso) {
-    return state.blockedDates.filter((b) => b.date === iso);
-  }
-
-  function isSlotTaken(iso, slot) {
-    const existing = getBookingsForDate(iso);
-    if (!existing.length) return false;
-    if (existing.some((b) => (b.slot || "Whole Day") === "Whole Day")) return true;
-    if (slot === "Whole Day") return existing.length > 0;
-    return existing.some((b) => b.slot === slot);
-  }
-
-  function updateSelectedDateAlert() {
-    const alertBox = $("selectedDateAlert");
-    const submitBtn = $("submitBookingBtn");
-    const chosenSlot = ($("bookSlotSelect") && $("bookSlotSelect").value) || "Whole Day";
-    if (!alertBox || !selectedDateISO) return;
-
-    const existing = getBookingsForDate(selectedDateISO);
-    const conflict = isSlotTaken(selectedDateISO, chosenSlot);
-
-    if (conflict) {
-      const summary = existing.map((x) => `${x.slot || "Whole Day"}: ${x.reason}`).join(" | ");
-      alertBox.innerHTML = `<span class="cal-status-pill unavail">Unavailable</span> <span style="color:var(--danger);font-weight:600">${escapeHtml(chosenSlot)} on ${escapeHtml(selectedDateISO)} is already booked (${escapeHtml(summary)}).</span>`;
-      if (submitBtn) submitBtn.disabled = true;
-    } else if (existing.length > 0) {
-      const takenList = existing.map((x) => x.slot || "Half-Day").join(", ");
-      alertBox.innerHTML = `<span class="cal-status-pill partial">Half-Day Open</span> <span style="color:var(--ok);font-weight:600">${escapeHtml(chosenSlot)} is available!</span> <span class="subtitle" style="font-size:12px">(${escapeHtml(takenList)} already booked)</span>`;
-      if (submitBtn) submitBtn.disabled = false;
-    } else {
-      alertBox.innerHTML = `<span class="cal-status-pill avail">Open</span> <span style="color:var(--muted)">${escapeHtml(selectedDateISO)} (${escapeHtml(chosenSlot)}) is available for booking.</span>`;
-      if (submitBtn) submitBtn.disabled = false;
-    }
-  }
-
-  function renderCalendar() {
-    const daysEl = $("calendarDays");
-    const titleEl = $("calMonthTitle");
-    if (!daysEl || !titleEl) return;
-
-    const firstDay = new Date(viewYear, viewMonth, 1);
-    titleEl.textContent = firstDay.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-
-    const startWeekday = firstDay.getDay();
-    const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const prevMonthDays = new Date(viewYear, viewMonth, 0).getDate();
-
-    daysEl.innerHTML = "";
-
-    for (let i = startWeekday - 1; i >= 0; i--) {
-      const cell = document.createElement("div");
-      cell.className = "cal-day muted";
-      cell.innerHTML = `<span>${prevMonthDays - i}</span>`;
-      daysEl.appendChild(cell);
-    }
-
-    for (let day = 1; day <= totalDays; day++) {
-      const mm = String(viewMonth + 1).padStart(2, "0");
-      const dd = String(day).padStart(2, "0");
-      const iso = `${viewYear}-${mm}-${dd}`;
-      const list = getBookingsForDate(iso);
-
-      const isWhole = list.some((b) => (b.slot || "Whole Day") === "Whole Day") ||
-        (list.some((b) => b.slot === "Morning (AM)") && list.some((b) => b.slot === "Afternoon (PM)"));
-      const isPartial = !isWhole && list.length > 0;
-
-      const cell = document.createElement("button");
-      cell.type = "button";
-      cell.className = "cal-day";
-      if (iso === selectedDateISO) cell.classList.add("selected");
-      if (isWhole) cell.classList.add("booked");
-      else if (isPartial) cell.classList.add("partial");
-
-      let badgeHtml = '<span class="cal-status-pill avail">Open</span>';
-      if (isWhole) badgeHtml = '<span class="cal-status-pill unavail">Full</span>';
-      else if (isPartial) badgeHtml = `<span class="cal-status-pill partial">${escapeHtml(list[0].slot === "Morning (AM)" ? "AM Booked" : "PM Booked")}</span>`;
-
-      cell.innerHTML = `<strong>${day}</strong>${badgeHtml}`;
-
-      cell.addEventListener("click", () => {
-        selectedDateISO = iso;
-        if ($("bookDateInput")) $("bookDateInput").value = iso;
-        if ($("unavailDate")) $("unavailDate").value = iso;
-        updateSelectedDateAlert();
-        renderCalendar();
-      });
-
-      daysEl.appendChild(cell);
-    }
-
-    if ($("bookDateInput") && !$("bookDateInput").value) $("bookDateInput").value = selectedDateISO;
-    if ($("unavailDate") && !$("unavailDate").value) $("unavailDate").value = selectedDateISO;
-    updateSelectedDateAlert();
-  }
-
-  if ($("prevMonthBtn")) {
-    $("prevMonthBtn").addEventListener("click", () => {
-      viewMonth -= 1;
-      if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
-      renderCalendar();
-    });
-  }
-  if ($("nextMonthBtn")) {
-    $("nextMonthBtn").addEventListener("click", () => {
-      viewMonth += 1;
-      if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
-      renderCalendar();
-    });
-  }
-  if ($("todayMonthBtn")) {
-    $("todayMonthBtn").addEventListener("click", () => {
-      const now = new Date();
-      viewYear = now.getFullYear();
-      viewMonth = now.getMonth();
-      selectedDateISO = todayISO();
-      if ($("bookDateInput")) $("bookDateInput").value = selectedDateISO;
-      if ($("unavailDate")) $("unavailDate").value = selectedDateISO;
-      renderCalendar();
-    });
-  }
-
-  if ($("bookDateInput")) {
-    $("bookDateInput").addEventListener("change", (e) => {
-      if (e.target.value) {
-        selectedDateISO = e.target.value;
-        updateSelectedDateAlert();
-        renderCalendar();
-      }
-    });
-  }
-  if ($("bookSlotSelect")) {
-    $("bookSlotSelect").addEventListener("change", updateSelectedDateAlert);
-  }
-
-  // Client Booking Form (Supports Half-Day AM / PM / Whole Day + Custom Time)
-  if ($("clientBookingForm")) {
-    $("clientBookingForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const dateVal = $("bookDateInput").value;
-      const slotVal = $("bookSlotSelect").value || "Whole Day";
-      const exactTime = ($("bookCustomTime").value || "").trim();
-      const client = ($("bookClientName").value || "").trim();
-      const eventType = ($("bookEventType").value || "").trim();
-      if (!dateVal || !client || !eventType) return;
-
-      if (isSlotTaken(dateVal, slotVal)) {
-        updateSelectedDateAlert();
-        return;
-      }
-
-      const timeSuffix = exactTime ? ` (${exactTime})` : "";
-      state.blockedDates.push({
-        id: uid(),
-        date: dateVal,
-        slot: slotVal,
-        reason: `${eventType} — ${client}${timeSuffix}`
-      });
-
-      $("bookClientName").value = "";
-      $("bookEventType").value = "";
-      $("bookCustomTime").value = "";
-      if ($("bookingStatusMsg")) {
-        $("bookingStatusMsg").textContent = `Booked: ${client} on ${dateVal} [${slotVal}${timeSuffix}].`;
-      }
-      saveState();
-    });
-  }
-
-  // Manual Unavailable / Edit Form
-  if ($("setUnavailableForm")) {
-    $("setUnavailableForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const editId = $("editingScheduleId").value;
-      const dateVal = $("unavailDate").value;
-      const slotVal = $("unavailSlot").value || "Whole Day";
-      const reasonVal = ($("unavailReason").value || "").trim() || "Unavailable";
-      if (!dateVal) return;
-
-      if (editId) {
-        const target = state.blockedDates.find((b) => b.id === editId);
-        if (target) {
-          target.date = dateVal;
-          target.slot = slotVal;
-          target.reason = reasonVal;
         }
-        $("editingScheduleId").value = "";
-        $("saveScheduleBtn").textContent = "Add Unavailable Slot";
-        $("cancelEditScheduleBtn").style.display = "none";
-      } else {
-        state.blockedDates.push({ id: uid(), date: dateVal, slot: slotVal, reason: reasonVal });
-      }
 
-      $("unavailReason").value = "";
-      saveState();
-    });
+        grid.appendChild(item);
+      });
+      box.appendChild(grid);
+    }
+
+    container.appendChild(box);
+  });
+}
+
+// =========================================================
+// CALENDAR + HALF-DAY / WHOLE-DAY + CANCEL/DELETE
+// =========================================================
+let viewYear = new Date().getFullYear();
+let viewMonth = new Date().getMonth();
+let selectedDateISO = todayISO();
+
+function getBookingsForDate(iso) {
+  return (sharedState.blockedDates || []).filter((b) => b.date === iso);
+}
+
+function isSlotTaken(iso, slot) {
+  const existing = getBookingsForDate(iso);
+  if (!existing.length) return false;
+  if (existing.some((b) => (b.slot || "Whole Day") === "Whole Day")) return true;
+  if (slot === "Whole Day") return existing.length > 0;
+  return existing.some((b) => b.slot === slot);
+}
+
+function updateSelectedDateAlert() {
+  const alertBox = $("selectedDateAlert");
+  const submitBtn = $("submitBookingBtn");
+  const chosenSlot = ($("bookSlotSelect") && $("bookSlotSelect").value) || "Whole Day";
+  if (!alertBox || !selectedDateISO) return;
+
+  const existing = getBookingsForDate(selectedDateISO);
+  const conflict = isSlotTaken(selectedDateISO, chosenSlot);
+
+  if (conflict) {
+    const summary = existing.map((x) => `${x.slot || "Whole Day"}: ${x.reason}`).join(" | ");
+    alertBox.innerHTML = `<span class="cal-status-pill unavail">Unavailable</span> <span style="color:var(--danger);font-weight:600">${escapeHtml(chosenSlot)} on ${escapeHtml(selectedDateISO)} is already booked (${escapeHtml(summary)}).</span>`;
+    if (submitBtn) submitBtn.disabled = true;
+  } else if (existing.length > 0) {
+    const takenList = existing.map((x) => x.slot || "Half-Day").join(", ");
+    alertBox.innerHTML = `<span class="cal-status-pill partial">Half-Day Open</span> <span style="color:var(--ok);font-weight:600">${escapeHtml(chosenSlot)} is available!</span> <span class="subtitle" style="font-size:12px">(${escapeHtml(takenList)} already booked)</span>`;
+    if (submitBtn) submitBtn.disabled = false;
+  } else {
+    alertBox.innerHTML = `<span class="cal-status-pill avail">Open</span> <span style="color:var(--muted)">${escapeHtml(selectedDateISO)} (${escapeHtml(chosenSlot)}) is available for booking.</span>`;
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+function renderCalendar() {
+  const daysEl = $("calendarDays");
+  const titleEl = $("calMonthTitle");
+  if (!daysEl || !titleEl) return;
+
+  const firstDay = new Date(viewYear, viewMonth, 1);
+  titleEl.textContent = firstDay.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+
+  const startWeekday = firstDay.getDay();
+  const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const prevMonthDays = new Date(viewYear, viewMonth, 0).getDate();
+
+  daysEl.innerHTML = "";
+
+  for (let i = startWeekday - 1; i >= 0; i--) {
+    const cell = document.createElement("div");
+    cell.className = "cal-day muted";
+    cell.innerHTML = `<span>${prevMonthDays - i}</span>`;
+    daysEl.appendChild(cell);
   }
 
-  if ($("cancelEditScheduleBtn")) {
-    $("cancelEditScheduleBtn").addEventListener("click", () => {
+  for (let day = 1; day <= totalDays; day++) {
+    const mm = String(viewMonth + 1).padStart(2, "0");
+    const dd = String(day).padStart(2, "0");
+    const iso = `${viewYear}-${mm}-${dd}`;
+    const list = getBookingsForDate(iso);
+
+    const isWhole = list.some((b) => (b.slot || "Whole Day") === "Whole Day") ||
+      (list.some((b) => b.slot === "Morning (AM)") && list.some((b) => b.slot === "Afternoon (PM)"));
+    const isPartial = !isWhole && list.length > 0;
+
+    const cell = document.createElement("button");
+    cell.type = "button";
+    cell.className = "cal-day";
+    if (iso === selectedDateISO) cell.classList.add("selected");
+    if (isWhole) cell.classList.add("booked");
+    else if (isPartial) cell.classList.add("partial");
+
+    let badgeHtml = '<span class="cal-status-pill avail">Open</span>';
+    if (isWhole) badgeHtml = '<span class="cal-status-pill unavail">Full</span>';
+    else if (isPartial) badgeHtml = `<span class="cal-status-pill partial">${escapeHtml(list[0].slot === "Morning (AM)" ? "AM Booked" : "PM Booked")}</span>`;
+
+    cell.innerHTML = `<strong>${day}</strong>${badgeHtml}`;
+
+    cell.addEventListener("click", () => {
+      selectedDateISO = iso;
+      if ($("bookDateInput")) $("bookDateInput").value = iso;
+      if ($("unavailDate")) $("unavailDate").value = iso;
+      updateSelectedDateAlert();
+      renderCalendar();
+    });
+
+    daysEl.appendChild(cell);
+  }
+
+  if ($("bookDateInput") && !$("bookDateInput").value) $("bookDateInput").value = selectedDateISO;
+  if ($("unavailDate") && !$("unavailDate").value) $("unavailDate").value = selectedDateISO;
+  updateSelectedDateAlert();
+}
+
+if ($("prevMonthBtn")) {
+  $("prevMonthBtn").addEventListener("click", () => {
+    viewMonth -= 1;
+    if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
+    renderCalendar();
+  });
+}
+if ($("nextMonthBtn")) {
+  $("nextMonthBtn").addEventListener("click", () => {
+    viewMonth += 1;
+    if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
+    renderCalendar();
+  });
+}
+if ($("todayMonthBtn")) {
+  $("todayMonthBtn").addEventListener("click", () => {
+    const now = new Date();
+    viewYear = now.getFullYear();
+    viewMonth = now.getMonth();
+    selectedDateISO = todayISO();
+    if ($("bookDateInput")) $("bookDateInput").value = selectedDateISO;
+    if ($("unavailDate")) $("unavailDate").value = selectedDateISO;
+    renderCalendar();
+  });
+}
+
+if ($("bookDateInput")) {
+  $("bookDateInput").addEventListener("change", (e) => {
+    if (e.target.value) {
+      selectedDateISO = e.target.value;
+      updateSelectedDateAlert();
+      renderCalendar();
+    }
+  });
+}
+if ($("bookSlotSelect")) {
+  $("bookSlotSelect").addEventListener("change", updateSelectedDateAlert);
+}
+
+if ($("clientBookingForm")) {
+  $("clientBookingForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const dateVal = $("bookDateInput").value;
+    const slotVal = $("bookSlotSelect").value || "Whole Day";
+    const exactTime = ($("bookCustomTime").value || "").trim();
+    const client = ($("bookClientName").value || "").trim();
+    const eventType = ($("bookEventType").value || "").trim();
+    if (!dateVal || !client || !eventType) return;
+
+    if (isSlotTaken(dateVal, slotVal)) {
+      updateSelectedDateAlert();
+      return;
+    }
+
+    const timeSuffix = exactTime ? ` (${exactTime})` : "";
+    sharedState.blockedDates.push({
+      id: uid(),
+      date: dateVal,
+      slot: slotVal,
+      reason: `${eventType} — ${client}${timeSuffix}`
+    });
+
+    $("bookClientName").value = "";
+    $("bookEventType").value = "";
+    $("bookCustomTime").value = "";
+    if ($("bookingStatusMsg")) {
+      $("bookingStatusMsg").textContent = `Booked: ${client} on ${dateVal} [${slotVal}${timeSuffix}].`;
+    }
+    await saveSharedState();
+  });
+}
+
+if ($("setUnavailableForm")) {
+  $("setUnavailableForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+    const editId = $("editingScheduleId").value;
+    const dateVal = $("unavailDate").value;
+    const slotVal = $("unavailSlot").value || "Whole Day";
+    const reasonVal = ($("unavailReason").value || "").trim() || "Unavailable";
+    if (!dateVal) return;
+
+    if (editId) {
+      const target = sharedState.blockedDates.find((b) => b.id === editId);
+      if (target) {
+        target.date = dateVal;
+        target.slot = slotVal;
+        target.reason = reasonVal;
+      }
       $("editingScheduleId").value = "";
-      $("unavailReason").value = "";
       $("saveScheduleBtn").textContent = "Add Unavailable Slot";
       $("cancelEditScheduleBtn").style.display = "none";
-    });
-  }
+    } else {
+      sharedState.blockedDates.push({ id: uid(), date: dateVal, slot: slotVal, reason: reasonVal });
+    }
 
-  function renderScheduleLists() {
-    const sorted = [...state.blockedDates].sort((a, b) => a.date.localeCompare(b.date));
+    $("unavailReason").value = "";
+    await saveSharedState();
+  });
+}
 
-    const mgr = $("scheduleManagerList");
-    if (mgr) {
-      mgr.innerHTML = "";
-      if (!sorted.length) {
-        mgr.innerHTML = `<div class="subtitle" style="font-size:13px">${state.lang === "tl" ? "Wala pang naka-book o blocked na petsa. Lahat ng araw ay bukas." : "No bookings or unavailable dates set. All dates are open."}</div>`;
-      } else {
-        sorted.forEach((item) => {
-          const slotLabel = item.slot || "Whole Day";
-          const row = document.createElement("div");
-          row.className = "schedule-item";
-          row.innerHTML = `
-            <div>
-              <strong>${escapeHtml(item.date)}</strong> · <span class="cal-status-pill ${slotLabel === "Whole Day" ? "unavail" : "partial"}">${escapeHtml(slotLabel)}</span>
-              <div class="subtitle" style="font-size:12.5px;margin-top:3px">${escapeHtml(item.reason)}</div>
-            </div>
-          `;
+if ($("cancelEditScheduleBtn")) {
+  $("cancelEditScheduleBtn").addEventListener("click", () => {
+    $("editingScheduleId").value = "";
+    $("unavailReason").value = "";
+    $("saveScheduleBtn").textContent = "Add Unavailable Slot";
+    $("cancelEditScheduleBtn").style.display = "none";
+  });
+}
 
+function renderScheduleLists() {
+  const sorted = [...(sharedState.blockedDates || [])].sort((a, b) => a.date.localeCompare(b.date));
+
+  const mgr = $("scheduleManagerList");
+  if (mgr) {
+    mgr.innerHTML = "";
+    if (!sorted.length) {
+      mgr.innerHTML = `<div class="subtitle" style="font-size:13px">${localPrefs.lang === "tl" ? "Wala pang naka-book o blocked na petsa. Lahat ng araw ay bukas." : "No bookings or unavailable dates set. All dates are open."}</div>`;
+    } else {
+      sorted.forEach((item) => {
+        const slotLabel = item.slot || "Whole Day";
+        const row = document.createElement("div");
+        row.className = "schedule-item";
+        row.innerHTML = `
+          <div>
+            <strong>${escapeHtml(item.date)}</strong> · <span class="cal-status-pill ${slotLabel === "Whole Day" ? "unavail" : "partial"}">${escapeHtml(slotLabel)}</span>
+            <div class="subtitle" style="font-size:12.5px;margin-top:3px">${escapeHtml(item.reason)}</div>
+          </div>
+        `;
+
+        if (isAdmin) {
           const btns = document.createElement("div");
           btns.style.display = "flex";
           btns.style.gap = "6px";
@@ -2191,103 +2347,107 @@ footer{
           const cancelBtn = document.createElement("button");
           cancelBtn.type = "button";
           cancelBtn.className = "btn-small danger";
-          cancelBtn.textContent = state.lang === "tl" ? "Cancel / Tanggalin" : "Cancel / Delete";
-          cancelBtn.addEventListener("click", () => {
-            state.blockedDates = state.blockedDates.filter((b) => b.id !== item.id);
-            saveState();
+          cancelBtn.textContent = localPrefs.lang === "tl" ? "Cancel / Tanggalin" : "Cancel / Delete";
+          cancelBtn.addEventListener("click", async () => {
+            sharedState.blockedDates = sharedState.blockedDates.filter((b) => b.id !== item.id);
+            await saveSharedState();
           });
 
           btns.appendChild(editBtn);
           btns.appendChild(cancelBtn);
           row.appendChild(btns);
-          mgr.appendChild(row);
-        });
-      }
-    }
-
-    const homePrev = $("homeSchedulePreview");
-    if (homePrev) {
-      homePrev.innerHTML = "";
-      if (!sorted.length) {
-        homePrev.innerHTML = `<div class="subtitle" style="font-size:13px">${state.lang === "tl" ? "Wala pang naka-book na petsa sa ngayon." : "No booked or blocked dates yet. All dates open."}</div>`;
-      } else {
-        sorted.slice(0, 4).forEach((item) => {
-          const slotLabel = item.slot || "Whole Day";
-          const row = document.createElement("div");
-          row.className = "schedule-item";
-          row.innerHTML = `
-            <div><strong>${escapeHtml(item.date)}</strong> (${escapeHtml(slotLabel)}) · <span class="subtitle" style="font-size:12.5px">${escapeHtml(item.reason)}</span></div>
-            <span class="cal-status-pill ${slotLabel === "Whole Day" ? "unavail" : "partial"}">${slotLabel === "Whole Day" ? "Full" : "Half-Day"}</span>
-          `;
-          homePrev.appendChild(row);
-        });
-      }
-    }
-  }
-
-  // =========================================================
-  // ANNOUNCEMENTS
-  // =========================================================
-  if ($("announcementForm")) {
-    $("announcementForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const editId = $("editAnnounceId").value;
-      const title = ($("announceTitle").value || "").trim();
-      const body = ($("announceBody").value || "").trim();
-      if (!title || !body) return;
-
-      if (editId) {
-        const target = state.announcements.find((a) => a.id === editId);
-        if (target) {
-          target.title = title;
-          target.body = body;
-          target.createdAt = todayISO();
         }
-        $("editAnnounceId").value = "";
-        $("saveAnnounceBtn").textContent = "Publish Announcement";
-        $("cancelAnnounceEditBtn").style.display = "none";
-      } else {
-        state.announcements.unshift({ id: uid(), title, body, createdAt: todayISO() });
-      }
 
-      $("announceTitle").value = "";
-      $("announceBody").value = "";
-      saveState();
-    });
+        mgr.appendChild(row);
+      });
+    }
   }
 
-  if ($("cancelAnnounceEditBtn")) {
-    $("cancelAnnounceEditBtn").addEventListener("click", () => {
+  const homePrev = $("homeSchedulePreview");
+  if (homePrev) {
+    homePrev.innerHTML = "";
+    if (!sorted.length) {
+      homePrev.innerHTML = `<div class="subtitle" style="font-size:13px">${localPrefs.lang === "tl" ? "Wala pang naka-book na petsa sa ngayon." : "No booked or blocked dates yet. All dates open."}</div>`;
+    } else {
+      sorted.slice(0, 4).forEach((item) => {
+        const slotLabel = item.slot || "Whole Day";
+        const row = document.createElement("div");
+        row.className = "schedule-item";
+        row.innerHTML = `
+          <div><strong>${escapeHtml(item.date)}</strong> (${escapeHtml(slotLabel)}) · <span class="subtitle" style="font-size:12.5px">${escapeHtml(item.reason)}</span></div>
+          <span class="cal-status-pill ${slotLabel === "Whole Day" ? "unavail" : "partial"}">${slotLabel === "Whole Day" ? "Full" : "Half-Day"}</span>
+        `;
+        homePrev.appendChild(row);
+      });
+    }
+  }
+}
+
+// =========================================================
+// ANNOUNCEMENTS
+// =========================================================
+if ($("announcementForm")) {
+  $("announcementForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+    const editId = $("editAnnounceId").value;
+    const title = ($("announceTitle").value || "").trim();
+    const body = ($("announceBody").value || "").trim();
+    if (!title || !body) return;
+
+    if (editId) {
+      const target = sharedState.announcements.find((a) => a.id === editId);
+      if (target) {
+        target.title = title;
+        target.body = body;
+        target.createdAt = todayISO();
+      }
       $("editAnnounceId").value = "";
-      $("announceTitle").value = "";
-      $("announceBody").value = "";
       $("saveAnnounceBtn").textContent = "Publish Announcement";
       $("cancelAnnounceEditBtn").style.display = "none";
-    });
-  }
+    } else {
+      sharedState.announcements.unshift({ id: uid(), title, body, createdAt: todayISO() });
+    }
 
-  function renderAnnouncements() {
-    const list = $("announcementsList");
-    if (list) {
-      list.innerHTML = "";
-      if (!state.announcements.length) {
-        list.innerHTML = '<div class="empty-box">No announcements published yet.</div>';
-      } else {
-        state.announcements.forEach((ann) => {
-          const card = document.createElement("div");
-          card.className = "announcement-card";
-          card.id = "ann_" + ann.id;
+    $("announceTitle").value = "";
+    $("announceBody").value = "";
+    await saveSharedState();
+  });
+}
 
-          const top = document.createElement("div");
-          top.className = "announcement-top";
-          top.innerHTML = `
-            <div>
-              <span class="tag-pin">Notice · ${escapeHtml(ann.createdAt)}</span>
-              <h3 style="margin:6px 0 6px">${escapeHtml(ann.title)}</h3>
-              <p class="subtitle" style="color:var(--text)">${escapeHtml(ann.body)}</p>
-            </div>
-          `;
+if ($("cancelAnnounceEditBtn")) {
+  $("cancelAnnounceEditBtn").addEventListener("click", () => {
+    $("editAnnounceId").value = "";
+    $("announceTitle").value = "";
+    $("announceBody").value = "";
+    $("saveAnnounceBtn").textContent = "Publish Announcement";
+    $("cancelAnnounceEditBtn").style.display = "none";
+  });
+}
 
+function renderAnnouncements() {
+  const list = $("announcementsList");
+  if (list) {
+    list.innerHTML = "";
+    if (!sharedState.announcements.length) {
+      list.innerHTML = '<div class="empty-box">No announcements published yet.</div>';
+    } else {
+      sharedState.announcements.forEach((ann) => {
+        const card = document.createElement("div");
+        card.className = "announcement-card";
+        card.id = "ann_" + ann.id;
+
+        const top = document.createElement("div");
+        top.className = "announcement-top";
+        top.innerHTML = `
+          <div>
+            <span class="tag-pin">Notice · ${escapeHtml(ann.createdAt)}</span>
+            <h3 style="margin:6px 0 6px">${escapeHtml(ann.title)}</h3>
+            <p class="subtitle" style="color:var(--text)">${escapeHtml(ann.body)}</p>
+          </div>
+        `;
+
+        if (isAdmin) {
           const actions = document.createElement("div");
           actions.style.display = "flex";
           actions.style.gap = "6px";
@@ -2309,99 +2469,103 @@ footer{
           delBtn.type = "button";
           delBtn.className = "btn-small danger";
           delBtn.textContent = "Delete";
-          delBtn.addEventListener("click", () => {
-            state.announcements = state.announcements.filter((a) => a.id !== ann.id);
-            saveState();
+          delBtn.addEventListener("click", async () => {
+            sharedState.announcements = sharedState.announcements.filter((a) => a.id !== ann.id);
+            await saveSharedState();
           });
 
           actions.appendChild(editBtn);
           actions.appendChild(delBtn);
           top.appendChild(actions);
-          card.appendChild(top);
-          list.appendChild(card);
-        });
-      }
-    }
-
-    const homePrev = $("homeAnnouncementsPreview");
-    if (homePrev) {
-      homePrev.innerHTML = "";
-      if (!state.announcements.length) {
-        homePrev.innerHTML = '<div class="subtitle" style="margin-top:12px;font-size:13px">No active announcements.</div>';
-      } else {
-        state.announcements.slice(0, 2).forEach((ann) => {
-          const item = document.createElement("div");
-          item.className = "announcement-card";
-          item.innerHTML = `<span class="tag-pin">${escapeHtml(ann.createdAt)}</span><h3 style="margin:6px 0 4px;font-size:16px">${escapeHtml(ann.title)}</h3><p class="subtitle" style="font-size:13px">${escapeHtml(ann.body)}</p>`;
-          homePrev.appendChild(item);
-        });
-      }
-    }
-  }
-
-  // =========================================================
-  // NOTES
-  // =========================================================
-  if ($("noteForm")) {
-    $("noteForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const editId = $("editNoteId").value;
-      const title = ($("noteTitleInput").value || "").trim();
-      const body = ($("noteContentInput").value || "").trim();
-      if (!title || !body) return;
-
-      if (editId) {
-        const n = state.notes.find((x) => x.id === editId);
-        if (n) {
-          n.title = title;
-          n.body = body;
-          n.updatedAt = todayISO();
         }
-        $("editNoteId").value = "";
-        $("saveNoteBtn").textContent = "Save Note";
-        $("cancelNoteEditBtn").style.display = "none";
-      } else {
-        state.notes.unshift({ id: uid(), title, body, updatedAt: todayISO() });
-      }
 
-      $("noteTitleInput").value = "";
-      $("noteContentInput").value = "";
-      saveState();
-    });
+        card.appendChild(top);
+        list.appendChild(card);
+      });
+    }
   }
 
-  if ($("cancelNoteEditBtn")) {
-    $("cancelNoteEditBtn").addEventListener("click", () => {
+  const homePrev = $("homeAnnouncementsPreview");
+  if (homePrev) {
+    homePrev.innerHTML = "";
+    if (!sharedState.announcements.length) {
+      homePrev.innerHTML = '<div class="subtitle" style="margin-top:12px;font-size:13px">No active announcements.</div>';
+    } else {
+      sharedState.announcements.slice(0, 2).forEach((ann) => {
+        const item = document.createElement("div");
+        item.className = "announcement-card";
+        item.innerHTML = `<span class="tag-pin">${escapeHtml(ann.createdAt)}</span><h3 style="margin:6px 0 4px;font-size:16px">${escapeHtml(ann.title)}</h3><p class="subtitle" style="font-size:13px">${escapeHtml(ann.body)}</p>`;
+        homePrev.appendChild(item);
+      });
+    }
+  }
+}
+
+// =========================================================
+// NOTES
+// =========================================================
+if ($("noteForm")) {
+  $("noteForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+    const editId = $("editNoteId").value;
+    const title = ($("noteTitleInput").value || "").trim();
+    const body = ($("noteContentInput").value || "").trim();
+    if (!title || !body) return;
+
+    if (editId) {
+      const n = sharedState.notes.find((x) => x.id === editId);
+      if (n) {
+        n.title = title;
+        n.body = body;
+        n.updatedAt = todayISO();
+      }
       $("editNoteId").value = "";
-      $("noteTitleInput").value = "";
-      $("noteContentInput").value = "";
       $("saveNoteBtn").textContent = "Save Note";
       $("cancelNoteEditBtn").style.display = "none";
-    });
-  }
-
-  function renderNotes() {
-    const grid = $("notesContainer");
-    if (!grid) return;
-    grid.innerHTML = "";
-
-    if (!state.notes.length) {
-      grid.innerHTML = '<div class="empty-box" style="grid-column:1/-1">No notes yet. Add a note above.</div>';
-      return;
+    } else {
+      sharedState.notes.unshift({ id: uid(), title, body, updatedAt: todayISO() });
     }
 
-    state.notes.forEach((n) => {
-      const card = document.createElement("div");
-      card.className = "note-card";
-      card.id = "note_" + n.id;
-      card.innerHTML = `
-        <div>
-          <div class="eyebrow">${escapeHtml(n.updatedAt)}</div>
-          <h3 style="margin:5px 0 8px">${escapeHtml(n.title)}</h3>
-          <p class="subtitle" style="color:var(--text);white-space:pre-wrap">${escapeHtml(n.body)}</p>
-        </div>
-      `;
+    $("noteTitleInput").value = "";
+    $("noteContentInput").value = "";
+    await saveSharedState();
+  });
+}
 
+if ($("cancelNoteEditBtn")) {
+  $("cancelNoteEditBtn").addEventListener("click", () => {
+    $("editNoteId").value = "";
+    $("noteTitleInput").value = "";
+    $("noteContentInput").value = "";
+    $("saveNoteBtn").textContent = "Save Note";
+    $("cancelNoteEditBtn").style.display = "none";
+  });
+}
+
+function renderNotes() {
+  const grid = $("notesContainer");
+  if (!grid) return;
+  grid.innerHTML = "";
+
+  if (!sharedState.notes.length) {
+    grid.innerHTML = '<div class="empty-box" style="grid-column:1/-1">No notes published yet.</div>';
+    return;
+  }
+
+  sharedState.notes.forEach((n) => {
+    const card = document.createElement("div");
+    card.className = "note-card";
+    card.id = "note_" + n.id;
+    card.innerHTML = `
+      <div>
+        <div class="eyebrow">${escapeHtml(n.updatedAt)}</div>
+        <h3 style="margin:5px 0 8px">${escapeHtml(n.title)}</h3>
+        <p class="subtitle" style="color:var(--text);white-space:pre-wrap">${escapeHtml(n.body)}</p>
+      </div>
+    `;
+
+    if (isAdmin) {
       const foot = document.createElement("div");
       foot.style.display = "flex";
       foot.style.gap = "6px";
@@ -2423,314 +2587,329 @@ footer{
       delBtn.type = "button";
       delBtn.className = "btn-small danger";
       delBtn.textContent = "Delete";
-      delBtn.addEventListener("click", () => {
-        state.notes = state.notes.filter((x) => x.id !== n.id);
-        saveState();
+      delBtn.addEventListener("click", async () => {
+        sharedState.notes = sharedState.notes.filter((x) => x.id !== n.id);
+        await saveSharedState();
       });
 
       foot.appendChild(editBtn);
       foot.appendChild(delBtn);
       card.appendChild(foot);
-      grid.appendChild(card);
-    });
-  }
-
-  // =========================================================
-  // CLIENT REVIEWS
-  // =========================================================
-  let pendingReviewPhotos = [];
-
-  function renderPendingReviewPhotos() {
-    const prev = $("revUploadPreview");
-    if (!prev) return;
-    prev.innerHTML = "";
-    pendingReviewPhotos.forEach((src, idx) => {
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = `Uploaded review photo ${idx + 1}`;
-      img.addEventListener("click", () => openLightbox(src));
-      prev.appendChild(img);
-    });
-  }
-
-  if ($("revPhotosInput")) {
-    $("revPhotosInput").addEventListener("change", (ev) => {
-      const files = Array.from(ev.target.files || []);
-      if (!files.length) return;
-      files.forEach((file) => {
-        compressImage(file, 900, (dataUrl) => {
-          pendingReviewPhotos.push(dataUrl);
-          renderPendingReviewPhotos();
-        });
-      });
-      ev.target.value = "";
-    });
-  }
-
-  if ($("reviewForm")) {
-    $("reviewForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const author = ($("revAuthor").value || "").trim();
-      const eventName = ($("revEvent").value || "").trim() || "Client Session";
-      const rating = Number($("revRating").value || 5);
-      const comment = ($("revComment").value || "").trim();
-      if (!author || !comment) return;
-
-      state.reviews.unshift({
-        id: uid(),
-        author,
-        eventName,
-        rating,
-        comment,
-        photos: [...pendingReviewPhotos],
-        date: todayISO()
-      });
-
-      pendingReviewPhotos = [];
-      renderPendingReviewPhotos();
-      $("reviewForm").reset();
-      saveState();
-    });
-  }
-
-  function renderReviews() {
-    const list = $("reviewsList");
-    if (!list) return;
-    list.innerHTML = "";
-
-    if (!state.reviews.length) {
-      list.innerHTML = '<div class="empty-box">No client reviews yet. Use the form on the left to post a review and upload photos.</div>';
-      return;
     }
 
-    state.reviews.forEach((r) => {
-      const card = document.createElement("div");
-      card.className = "review-card";
-      card.id = "rev_" + r.id;
+    grid.appendChild(card);
+  });
+}
 
-      const stars = "★".repeat(r.rating) + "☆".repeat(Math.max(0, 5 - r.rating));
-      card.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-          <div>
-            <div class="eyebrow">${escapeHtml(r.eventName)} · ${escapeHtml(r.date)}</div>
-            <h3 style="margin:4px 0">${escapeHtml(r.author)}</h3>
-          </div>
-          <span style="color:var(--accent);font-weight:700;font-size:14px">${stars}</span>
+// =========================================================
+// CLIENT REVIEWS (Public Submission + Cloud Photo Upload)
+// =========================================================
+let pendingReviewFiles = [];
+
+function renderPendingReviewPreview() {
+  const prev = $("revUploadPreview");
+  if (!prev) return;
+  prev.innerHTML = "";
+  pendingReviewFiles.forEach((item, idx) => {
+    const img = document.createElement("img");
+    img.src = item.previewUrl;
+    img.alt = `Uploaded review photo ${idx + 1}`;
+    img.addEventListener("click", () => openLightbox(item.previewUrl));
+    prev.appendChild(img);
+  });
+}
+
+if ($("revPhotosInput")) {
+  $("revPhotosInput").addEventListener("change", (ev) => {
+    const files = Array.from(ev.target.files || []);
+    files.forEach((file) => {
+      pendingReviewFiles.push({
+        file,
+        previewUrl: URL.createObjectURL(file)
+      });
+    });
+    renderPendingReviewPreview();
+    ev.target.value = "";
+  });
+}
+
+if ($("reviewForm")) {
+  $("reviewForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const author = ($("revAuthor").value || "").trim();
+    const eventName = ($("revEvent").value || "").trim() || "Client Session";
+    const rating = Number($("revRating").value || 5);
+    const comment = ($("revComment").value || "").trim();
+    if (!author || !comment) return;
+
+    const btn = $("submitReviewBtn");
+    if (btn) { btn.disabled = true; btn.textContent = "Submitting..."; }
+
+    const uploadedUrls = [];
+    for (const item of pendingReviewFiles) {
+      const url = await uploadImageAsset(item.file, "reviews", 900);
+      uploadedUrls.push(url);
+    }
+
+    sharedState.reviews.unshift({
+      id: uid(),
+      author,
+      eventName,
+      rating,
+      comment,
+      photos: uploadedUrls,
+      date: todayISO()
+    });
+
+    pendingReviewFiles = [];
+    renderPendingReviewPreview();
+    $("reviewForm").reset();
+    if (btn) { btn.disabled = false; btn.textContent = "Submit Review"; }
+    await saveSharedState();
+  });
+}
+
+function renderReviews() {
+  const list = $("reviewsList");
+  if (!list) return;
+  list.innerHTML = "";
+
+  if (!sharedState.reviews.length) {
+    list.innerHTML = '<div class="empty-box">No client reviews yet. Use the form on the left to post a review and upload photos.</div>';
+    return;
+  }
+
+  sharedState.reviews.forEach((r) => {
+    const card = document.createElement("div");
+    card.className = "review-card";
+    card.id = "rev_" + r.id;
+
+    const stars = "★".repeat(r.rating) + "☆".repeat(Math.max(0, 5 - r.rating));
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div>
+          <div class="eyebrow">${escapeHtml(r.eventName)} · ${escapeHtml(r.date)}</div>
+          <h3 style="margin:4px 0">${escapeHtml(r.author)}</h3>
         </div>
-        <p class="subtitle" style="color:var(--text);margin-top:8px">${escapeHtml(r.comment)}</p>
-      `;
+        <span style="color:var(--accent);font-weight:700;font-size:14px">${stars}</span>
+      </div>
+      <p class="subtitle" style="color:var(--text);margin-top:8px">${escapeHtml(r.comment)}</p>
+    `;
 
-      if (r.photos && r.photos.length) {
-        const pGrid = document.createElement("div");
-        pGrid.className = "review-photos";
-        r.photos.forEach((src) => {
-          const img = document.createElement("img");
-          img.src = src;
-          img.alt = `Photo by ${r.author}`;
-          img.addEventListener("click", () => openLightbox(src));
-          pGrid.appendChild(img);
-        });
-        card.appendChild(pGrid);
-      }
+    if (r.photos && r.photos.length) {
+      const pGrid = document.createElement("div");
+      pGrid.className = "review-photos";
+      r.photos.forEach((src) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = `Photo by ${r.author}`;
+        img.addEventListener("click", () => openLightbox(src));
+        pGrid.appendChild(img);
+      });
+      card.appendChild(pGrid);
+    }
 
+    if (isAdmin) {
       const delBtn = document.createElement("button");
       delBtn.type = "button";
       delBtn.className = "btn-small danger";
       delBtn.style.marginTop = "12px";
       delBtn.textContent = "Delete Review";
-      delBtn.addEventListener("click", () => {
-        state.reviews = state.reviews.filter((x) => x.id !== r.id);
-        saveState();
+      delBtn.addEventListener("click", async () => {
+        sharedState.reviews = sharedState.reviews.filter((x) => x.id !== r.id);
+        await saveSharedState();
       });
       card.appendChild(delBtn);
-
-      list.appendChild(card);
-    });
-  }
-
-  // =========================================================
-  // ACCURATE GLOBAL SEARCH BAR
-  // =========================================================
-  function runAccurateSearch(query) {
-    const panel = $("searchResultsPanel");
-    const clearBtn = $("searchClearBtn");
-    if (!panel) return;
-
-    const q = String(query || "").trim().toLowerCase();
-    if (clearBtn) clearBtn.classList.toggle("visible", q.length > 0);
-
-    if (!q) {
-      panel.classList.remove("open");
-      panel.innerHTML = "";
-      return;
     }
 
-    const hits = [];
+    list.appendChild(card);
+  });
+}
 
-    state.albums.forEach((alb) => {
-      const titleMatch = (alb.title || "").toLowerCase().includes(q);
-      const photoMatches = (alb.photos || []).filter((p) => (p.name || "").toLowerCase().includes(q));
-      if (titleMatch || photoMatches.length > 0) {
-        hits.push({
-          category: "Event Album",
-          title: alb.title,
-          sub: photoMatches.length > 0
-            ? `${photoMatches.length} matching photo(s) · ${alb.photos.length} total`
-            : `${alb.photos.length} photo(s) in album`,
-          page: "albums",
-          targetId: "album_" + alb.id
-        });
-      }
-    });
+// =========================================================
+// ACCURATE GLOBAL SEARCH BAR
+// =========================================================
+function runAccurateSearch(query) {
+  const panel = $("searchResultsPanel");
+  const clearBtn = $("searchClearBtn");
+  if (!panel) return;
 
-    state.announcements.forEach((ann) => {
-      if ((ann.title || "").toLowerCase().includes(q) || (ann.body || "").toLowerCase().includes(q)) {
-        hits.push({
-          category: "Announcement",
-          title: ann.title,
-          sub: ann.body.slice(0, 75),
-          page: "announcements",
-          targetId: "ann_" + ann.id
-        });
-      }
-    });
+  const q = String(query || "").trim().toLowerCase();
+  if (clearBtn) clearBtn.classList.toggle("visible", q.length > 0);
 
-    state.blockedDates.forEach((b) => {
-      if (
-        (b.date || "").toLowerCase().includes(q) ||
-        (b.slot || "").toLowerCase().includes(q) ||
-        (b.reason || "").toLowerCase().includes(q)
-      ) {
-        hits.push({
-          category: "Booked Schedule",
-          title: `${b.date} · ${b.slot || "Whole Day"}`,
-          sub: b.reason,
-          page: "calendar",
-          targetId: null
-        });
-      }
-    });
-
-    state.notes.forEach((n) => {
-      if ((n.title || "").toLowerCase().includes(q) || (n.body || "").toLowerCase().includes(q)) {
-        hits.push({
-          category: "Note",
-          title: n.title,
-          sub: n.body.slice(0, 75),
-          page: "notes",
-          targetId: "note_" + n.id
-        });
-      }
-    });
-
-    state.reviews.forEach((r) => {
-      if (
-        (r.author || "").toLowerCase().includes(q) ||
-        (r.eventName || "").toLowerCase().includes(q) ||
-        (r.comment || "").toLowerCase().includes(q)
-      ) {
-        hits.push({
-          category: "Client Review",
-          title: `${r.author} (${r.eventName})`,
-          sub: r.comment.slice(0, 75),
-          page: "reviews",
-          targetId: "rev_" + r.id
-        });
-      }
-    });
-
+  if (!q) {
+    panel.classList.remove("open");
     panel.innerHTML = "";
-    if (!hits.length) {
-      panel.innerHTML = `<div class="search-hit" style="cursor:default"><span class="search-hit-sub">No exact matches found for "<strong>${escapeHtml(query)}</strong>".</span></div>`;
-      panel.classList.add("open");
-      return;
-    }
+    return;
+  }
 
-    hits.slice(0, 12).forEach((h) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "search-hit";
-      btn.innerHTML = `
-        <span class="search-hit-cat">${escapeHtml(h.category)}</span>
-        <span class="search-hit-title">${escapeHtml(h.title)}</span>
-        <span class="search-hit-sub">${escapeHtml(h.sub)}</span>
-      `;
-      btn.addEventListener("click", () => {
-        showPage(h.page);
-        panel.classList.remove("open");
-        if (h.targetId && $(h.targetId)) {
-          setTimeout(() => {
-            $(h.targetId).scrollIntoView({ behavior: "smooth", block: "center" });
-          }, 80);
-        }
+  const hits = [];
+
+  (sharedState.albums || []).forEach((alb) => {
+    const titleMatch = (alb.title || "").toLowerCase().includes(q);
+    const photoMatches = (alb.photos || []).filter((p) => (p.name || "").toLowerCase().includes(q));
+    if (titleMatch || photoMatches.length > 0) {
+      hits.push({
+        category: "Event Album",
+        title: alb.title,
+        sub: photoMatches.length > 0
+          ? `${photoMatches.length} matching photo(s) · ${alb.photos.length} total`
+          : `${(alb.photos || []).length} photo(s) in album`,
+        page: "albums",
+        targetId: "album_" + alb.id
       });
-      panel.appendChild(btn);
-    });
-    panel.classList.add("open");
-  }
-
-  if ($("globalSearchInput")) {
-    $("globalSearchInput").addEventListener("input", (e) => runAccurateSearch(e.target.value));
-    $("globalSearchInput").addEventListener("focus", (e) => {
-      if (e.target.value.trim()) runAccurateSearch(e.target.value);
-    });
-  }
-  if ($("searchClearBtn")) {
-    $("searchClearBtn").addEventListener("click", () => {
-      if ($("globalSearchInput")) $("globalSearchInput").value = "";
-      runAccurateSearch("");
-    });
-  }
-  document.addEventListener("click", (e) => {
-    const box = document.querySelector(".search-box");
-    if (box && !box.contains(e.target) && $("searchResultsPanel")) {
-      $("searchResultsPanel").classList.remove("open");
     }
   });
 
-  // =========================================================
-  // MASTER RENDER
-  // =========================================================
-  function syncStudioLabels() {
-    const sName = state.studioName || "Rhandom Visuals";
-    const sSub = state.studioSub || "Client Studio Portal";
-    const initials = sName.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "RV";
+  (sharedState.announcements || []).forEach((ann) => {
+    if ((ann.title || "").toLowerCase().includes(q) || (ann.body || "").toLowerCase().includes(q)) {
+      hits.push({
+        category: "Announcement",
+        title: ann.title,
+        sub: ann.body.slice(0, 75),
+        page: "announcements",
+        targetId: "ann_" + ann.id
+      });
+    }
+  });
 
-    if ($("topInitials")) $("topInitials").textContent = initials;
-    if ($("topStudioName")) $("topStudioName").textContent = sName;
-    if ($("topStudioSub")) $("topStudioSub").textContent = sSub;
-    if ($("footerStudioLabel")) $("footerStudioLabel").textContent = sName;
+  (sharedState.blockedDates || []).forEach((b) => {
+    if (
+      (b.date || "").toLowerCase().includes(q) ||
+      (b.slot || "").toLowerCase().includes(q) ||
+      (b.reason || "").toLowerCase().includes(q)
+    ) {
+      hits.push({
+        category: "Booked Schedule",
+        title: `${b.date} · ${b.slot || "Whole Day"}`,
+        sub: b.reason,
+        page: "calendar",
+        targetId: null
+      });
+    }
+  });
 
-    if ($("setStudioName")) $("setStudioName").value = sName;
-    if ($("setStudioSub")) $("setStudioSub").value = sSub;
-    if ($("setProfileBio")) $("setProfileBio").value = state.profileBio || "";
-    if ($("setFbUrl")) $("setFbUrl").value = state.socialFacebook || "";
-    if ($("setIgUrl")) $("setIgUrl").value = state.socialInstagram || "";
-    if ($("setTtUrl")) $("setTtUrl").value = state.socialTiktok || "";
+  (sharedState.notes || []).forEach((n) => {
+    if ((n.title || "").toLowerCase().includes(q) || (n.body || "").toLowerCase().includes(q)) {
+      hits.push({
+        category: "Note",
+        title: n.title,
+        sub: n.body.slice(0, 75),
+        page: "notes",
+        targetId: "note_" + n.id
+      });
+    }
+  });
 
-    const totalUploadedPhotos = state.albums.reduce((acc, alb) => acc + (alb.photos ? alb.photos.length : 0), 0);
-    if ($("snapAlbums")) $("snapAlbums").textContent = String(state.albums.length);
-    if ($("snapPhotos")) $("snapPhotos").textContent = String(totalUploadedPhotos);
-    if ($("snapBookings")) $("snapBookings").textContent = String(state.blockedDates.length);
-    if ($("snapReviews")) $("snapReviews").textContent = String(state.reviews.length);
+  (sharedState.reviews || []).forEach((r) => {
+    if (
+      (r.author || "").toLowerCase().includes(q) ||
+      (r.eventName || "").toLowerCase().includes(q) ||
+      (r.comment || "").toLowerCase().includes(q)
+    ) {
+      hits.push({
+        category: "Client Review",
+        title: `${r.author} (${r.eventName})`,
+        sub: r.comment.slice(0, 75),
+        page: "reviews",
+        targetId: "rev_" + r.id
+      });
+    }
+  });
+
+  panel.innerHTML = "";
+  if (!hits.length) {
+    panel.innerHTML = `<div class="search-hit" style="cursor:default"><span class="search-hit-sub">No exact matches found for "<strong>${escapeHtml(query)}</strong>".</span></div>`;
+    panel.classList.add("open");
+    return;
   }
 
-  function renderAll() {
-    applyTheme();
-    applyLanguage();
-    syncStudioLabels();
-    renderProfile();
-    renderAlbums();
-    startSlideshowLoop();
-    renderCalendar();
-    renderScheduleLists();
-    renderAnnouncements();
-    renderNotes();
-    renderReviews();
-  }
+  hits.slice(0, 12).forEach((h) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "search-hit";
+    btn.innerHTML = `
+      <span class="search-hit-cat">${escapeHtml(h.category)}</span>
+      <span class="search-hit-title">${escapeHtml(h.title)}</span>
+      <span class="search-hit-sub">${escapeHtml(h.sub)}</span>
+    `;
+    btn.addEventListener("click", () => {
+      showPage(h.page);
+      panel.classList.remove("open");
+      if (h.targetId && $(h.targetId)) {
+        setTimeout(() => {
+          $(h.targetId).scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 80);
+      }
+    });
+    panel.appendChild(btn);
+  });
+  panel.classList.add("open");
+}
 
-  renderAll();
-})();
+if ($("globalSearchInput")) {
+  $("globalSearchInput").addEventListener("input", (e) => runAccurateSearch(e.target.value));
+  $("globalSearchInput").addEventListener("focus", (e) => {
+    if (e.target.value.trim()) runAccurateSearch(e.target.value);
+  });
+}
+if ($("searchClearBtn")) {
+  $("searchClearBtn").addEventListener("click", () => {
+    if ($("globalSearchInput")) $("globalSearchInput").value = "";
+    runAccurateSearch("");
+  });
+}
+document.addEventListener("click", (e) => {
+  const box = document.querySelector(".search-box");
+  if (box && !box.contains(e.target) && $("searchResultsPanel")) {
+    $("searchResultsPanel").classList.remove("open");
+  }
+});
+
+// =========================================================
+// MASTER RENDER
+// =========================================================
+function syncStudioLabels() {
+  const sName = sharedState.studioName || "Rhandom Visuals";
+  const sSub = sharedState.studioSub || "Client Studio Portal";
+  const initials = sName.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "RV";
+
+  if ($("topInitials")) $("topInitials").textContent = initials;
+  if ($("topStudioName")) $("topStudioName").textContent = sName;
+  if ($("topStudioSub")) $("topStudioSub").textContent = sSub;
+  if ($("footerStudioLabel")) $("footerStudioLabel").textContent = sName;
+
+  if ($("setStudioName")) $("setStudioName").value = sName;
+  if ($("setStudioSub")) $("setStudioSub").value = sSub;
+  if ($("setProfileBio")) $("setProfileBio").value = sharedState.profileBio || "";
+  if ($("setFbUrl")) $("setFbUrl").value = sharedState.socialFacebook || "";
+  if ($("setIgUrl")) $("setIgUrl").value = sharedState.socialInstagram || "";
+  if ($("setTtUrl")) $("setTtUrl").value = sharedState.socialTiktok || "";
+  if ($("setAdminPin")) $("setAdminPin").value = sharedState.adminPin || "1234";
+
+  const totalUploadedPhotos = (sharedState.albums || []).reduce((acc, alb) => acc + (alb.photos ? alb.photos.length : 0), 0);
+  if ($("snapAlbums")) $("snapAlbums").textContent = String((sharedState.albums || []).length);
+  if ($("snapPhotos")) $("snapPhotos").textContent = String(totalUploadedPhotos);
+  if ($("snapBookings")) $("snapBookings").textContent = String((sharedState.blockedDates || []).length);
+  if ($("snapReviews")) $("snapReviews").textContent = String((sharedState.reviews || []).length);
+}
+
+function renderAll() {
+  updateAdminUI();
+  applyTheme();
+  applyLanguage();
+  syncStudioLabels();
+  renderProfile();
+  renderAlbums();
+  startSlideshowLoop();
+  renderCalendar();
+  renderScheduleLists();
+  renderAnnouncements();
+  renderNotes();
+  renderReviews();
+}
+
+renderAll();
 </script>
 </body>
 </html>
