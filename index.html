@@ -1421,7 +1421,7 @@ footer{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // =========================================================================
 // ILAGAY DITO ANG IYONG FIREBASE CONFIG MULA SA FIREBASE CONSOLE
@@ -1495,6 +1495,38 @@ try {
   if (cached) sharedState = Object.assign({}, sharedState, cached);
 } catch (e) {}
 
+// In-memory HD photo cache (1 document per photo in rhandom_photos/{photoId})
+const photoCache = new Map();
+const photoLoading = new Set();
+
+function resolvePhotoSrc(refOrSrc) {
+  if (!refOrSrc) return "";
+  if (refOrSrc.startsWith("data:") || /^https?:\/\//i.test(refOrSrc)) return refOrSrc;
+  if (photoCache.has(refOrSrc)) return photoCache.get(refOrSrc);
+
+  if (db && !photoLoading.has(refOrSrc)) {
+    photoLoading.add(refOrSrc);
+    getDoc(doc(db, "rhandom_photos", refOrSrc))
+      .then((snap) => {
+        if (snap.exists() && snap.data().dataUrl) {
+          photoCache.set(refOrSrc, snap.data().dataUrl);
+          renderAll();
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => photoLoading.delete(refOrSrc));
+  }
+  return "";
+}
+
+async function deleteCloudPhoto(refOrId) {
+  if (!refOrId || refOrId.startsWith("data:") || /^https?:\/\//i.test(refOrId)) return;
+  photoCache.delete(refOrId);
+  if (db) {
+    try { await deleteDoc(doc(db, "rhandom_photos", refOrId)); } catch (e) {}
+  }
+}
+
 // Check if Firebase Config is filled
 const isFirebaseConfigured = Boolean(
   FIREBASE_CONFIG.apiKey &&
@@ -1513,7 +1545,7 @@ if (isFirebaseConfigured) {
     portalDocRef = doc(db, "rhandom_portal", "main_data");
 
     if ($("syncDot")) $("syncDot").classList.add("live");
-    if ($("syncStatusText")) $("syncStatusText").textContent = "Live Cloud Sync Active — Changes are visible to all visitors";
+    if ($("syncStatusText")) $("syncStatusText").textContent = "Live Cloud Sync Active (HD Photo Storage) — Changes are visible to all visitors";
 
     onSnapshot(portalDocRef, (snap) => {
       if (snap.exists()) {
@@ -1541,7 +1573,7 @@ async function saveSharedState() {
       await setDoc(portalDocRef, sharedState);
     } catch (err) {
       console.error(err);
-      alert("Cloud sync failed. Photo size may exceed Firestore 1MB document limit or check Firestore rules.");
+      alert("Cloud sync failed. Check Firestore rules or internet connection.");
     }
   }
 }
@@ -1617,9 +1649,9 @@ if ($("pinModalForm")) {
 }
 
 // =========================================================
-// IMAGE COMPRESSION FOR FREE FIRESTORE (No Blaze Storage needed)
+// HD IMAGE COMPRESSION + 1-DOC-PER-PHOTO FIRESTORE UPLOAD
 // =========================================================
-function compressToFirestoreDataUrl(file, maxDim = 760, quality = 0.65) {
+function compressToFirestoreDataUrl(file, maxDim = 1280, quality = 0.85) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("Read error"));
@@ -1635,10 +1667,14 @@ function compressToFirestoreDataUrl(file, maxDim = 760, quality = 0.65) {
         const canvas = document.createElement("canvas");
         canvas.width = w;
         canvas.height = h;
-        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, w, h);
+
         let dataUrl = canvas.toDataURL("image/jpeg", quality);
-        if (dataUrl.length > 420000) {
-          dataUrl = canvas.toDataURL("image/jpeg", 0.45);
+        if (dataUrl.length > 880000) {
+          dataUrl = canvas.toDataURL("image/jpeg", 0.74);
         }
         resolve(dataUrl);
       };
@@ -1648,8 +1684,20 @@ function compressToFirestoreDataUrl(file, maxDim = 760, quality = 0.65) {
   });
 }
 
-async function uploadImageAsset(file, _folderPath, maxDim = 760) {
-  return await compressToFirestoreDataUrl(file, maxDim, 0.65);
+async function uploadImageAsset(file, folderPath = "gallery", maxDim = 1280) {
+  const dataUrl = await compressToFirestoreDataUrl(file, maxDim, 0.85);
+  const photoId = "ph_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
+  photoCache.set(photoId, dataUrl);
+
+  if (db) {
+    await setDoc(doc(db, "rhandom_photos", photoId), {
+      folder: folderPath,
+      dataUrl,
+      createdAt: Date.now()
+    });
+    return photoId;
+  }
+  return dataUrl;
 }
 
 // =========================================================
@@ -1919,7 +1967,10 @@ function getAllAlbumSlides() {
   const slides = [];
   (sharedState.albums || []).forEach((alb) => {
     (alb.photos || []).forEach((ph) => {
-      if (ph && ph.src) slides.push({ src: ph.src, albumTitle: alb.title });
+      if (ph && ph.src) {
+        const resolved = resolvePhotoSrc(ph.src);
+        slides.push({ src: resolved, albumTitle: alb.title });
+      }
     });
   });
   return slides;
@@ -1947,8 +1998,10 @@ function showSlideAt(idx) {
   imgEl.style.display = "block";
   overlayEl.style.display = "flex";
 
-  imgEl.src = current.src;
-  imgEl.onclick = () => openLightbox(current.src);
+  if (current.src) {
+    imgEl.src = current.src;
+    imgEl.onclick = () => openLightbox(current.src);
+  }
   if ($("slideAlbumTitle")) $("slideAlbumTitle").textContent = current.albumTitle;
   if ($("slideCounterText")) $("slideCounterText").textContent = `${slideIndex + 1} / ${slides.length}`;
 }
@@ -1986,9 +2039,11 @@ if ($("profilePhotoInput")) {
     const file = ev.target.files && ev.target.files[0];
     if (!file) return;
     try {
-      const url = await uploadImageAsset(file, "profile", 480);
-      sharedState.profilePhoto = url;
+      const prevPhoto = sharedState.profilePhoto;
+      const photoRef = await uploadImageAsset(file, "profile", 960);
+      sharedState.profilePhoto = photoRef;
       await saveSharedState();
+      if (prevPhoto && prevPhoto !== photoRef) await deleteCloudPhoto(prevPhoto);
     } catch (e) {
       alert("Failed to upload profile photo.");
     }
@@ -2014,8 +2069,9 @@ function renderProfile() {
   const box = $("profileAvatarBox");
   const img = $("profilePhotoImg");
   if (box && img) {
-    if (sharedState.profilePhoto) {
-      img.src = sharedState.profilePhoto;
+    const resolved = resolvePhotoSrc(sharedState.profilePhoto);
+    if (resolved) {
+      img.src = resolved;
       box.classList.add("has-img");
     } else {
       img.removeAttribute("src");
@@ -2090,7 +2146,10 @@ function renderAlbums() {
       uploadLabel.style.background = "var(--btn-bg)";
       uploadLabel.style.color = "var(--btn-text)";
       uploadLabel.style.cursor = "pointer";
-      uploadLabel.textContent = localPrefs.lang === "tl" ? "＋ Mag-upload ng Pic" : "＋ Upload Photos";
+      const defaultUploadText = localPrefs.lang === "tl" ? "＋ Mag-upload ng Pic" : "＋ Upload Photos";
+      const labelSpan = document.createElement("span");
+      labelSpan.textContent = defaultUploadText;
+      uploadLabel.appendChild(labelSpan);
 
       const fileInput = document.createElement("input");
       fileInput.type = "file";
@@ -2100,11 +2159,11 @@ function renderAlbums() {
       fileInput.addEventListener("change", async (ev) => {
         const files = Array.from(ev.target.files || []);
         if (!files.length) return;
-        uploadLabel.textContent = "Uploading...";
-        for (const file of files) {
-          const url = await uploadImageAsset(file, `albums/${album.id}`, 720);
+        for (let i = 0; i < files.length; i++) {
+          labelSpan.textContent = `Uploading ${i + 1}/${files.length}...`;
+          const photoRef = await uploadImageAsset(files[i], `albums/${album.id}`, 1280);
           album.photos = album.photos || [];
-          album.photos.push({ id: uid(), src: url, name: file.name });
+          album.photos.push({ id: uid(), src: photoRef, name: files[i].name });
         }
         ev.target.value = "";
         await saveSharedState();
@@ -2117,8 +2176,10 @@ function renderAlbums() {
       delAlbumBtn.textContent = "Delete";
       delAlbumBtn.addEventListener("click", async () => {
         if (confirm(`Delete album "${album.title}"?`)) {
+          const toDelete = [...(album.photos || [])];
           sharedState.albums = sharedState.albums.filter((a) => a.id !== album.id);
           await saveSharedState();
+          for (const ph of toDelete) await deleteCloudPhoto(ph.src);
         }
       });
 
@@ -2142,10 +2203,13 @@ function renderAlbums() {
         const item = document.createElement("div");
         item.className = "album-photo";
 
+        const resolved = resolvePhotoSrc(ph.src);
         const img = document.createElement("img");
-        img.src = ph.src;
+        if (resolved) img.src = resolved;
         img.alt = ph.name || album.title;
-        img.addEventListener("click", () => openLightbox(ph.src));
+        img.addEventListener("click", () => {
+          if (resolved) openLightbox(resolved);
+        });
         item.appendChild(img);
 
         if (isAdmin) {
@@ -2155,8 +2219,10 @@ function renderAlbums() {
           rm.textContent = "✕";
           rm.addEventListener("click", async (e) => {
             e.stopPropagation();
+            const removedSrc = ph.src;
             album.photos = album.photos.filter((p) => p.id !== ph.id);
             await saveSharedState();
+            await deleteCloudPhoto(removedSrc);
           });
           item.appendChild(rm);
         }
@@ -2678,7 +2744,7 @@ function renderNotes() {
 }
 
 // =========================================================
-// CLIENT REVIEWS (Public Submission + Cloud Photo Upload)
+// CLIENT REVIEWS (Public Submission + HD Cloud Photo Upload)
 // =========================================================
 let pendingReviewFiles = [];
 
@@ -2721,10 +2787,10 @@ if ($("reviewForm")) {
     const btn = $("submitReviewBtn");
     if (btn) { btn.disabled = true; btn.textContent = "Submitting..."; }
 
-    const uploadedUrls = [];
+    const uploadedRefs = [];
     for (const item of pendingReviewFiles) {
-      const url = await uploadImageAsset(item.file, "reviews", 640);
-      uploadedUrls.push(url);
+      const refId = await uploadImageAsset(item.file, "reviews", 1100);
+      uploadedRefs.push(refId);
     }
 
     sharedState.reviews.unshift({
@@ -2733,7 +2799,7 @@ if ($("reviewForm")) {
       eventName,
       rating,
       comment,
-      photos: uploadedUrls,
+      photos: uploadedRefs,
       date: todayISO()
     });
 
@@ -2775,11 +2841,14 @@ function renderReviews() {
     if (r.photos && r.photos.length) {
       const pGrid = document.createElement("div");
       pGrid.className = "review-photos";
-      r.photos.forEach((src) => {
+      r.photos.forEach((refOrSrc) => {
+        const resolved = resolvePhotoSrc(refOrSrc);
         const img = document.createElement("img");
-        img.src = src;
+        if (resolved) img.src = resolved;
         img.alt = `Photo by ${r.author}`;
-        img.addEventListener("click", () => openLightbox(src));
+        img.addEventListener("click", () => {
+          if (resolved) openLightbox(resolved);
+        });
         pGrid.appendChild(img);
       });
       card.appendChild(pGrid);
@@ -2792,8 +2861,10 @@ function renderReviews() {
       delBtn.style.marginTop = "12px";
       delBtn.textContent = "Delete Review";
       delBtn.addEventListener("click", async () => {
+        const toDelete = [...(r.photos || [])];
         sharedState.reviews = sharedState.reviews.filter((x) => x.id !== r.id);
         await saveSharedState();
+        for (const refId of toDelete) await deleteCloudPhoto(refId);
       });
       card.appendChild(delBtn);
     }
