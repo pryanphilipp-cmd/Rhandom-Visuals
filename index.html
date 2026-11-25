@@ -1,0 +1,2736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rhandom Visuals — Client Studio &amp; Booking Portal</title>
+<style>
+:root{
+  --bg:#f8f7f5;
+  --surface:#ffffff;
+  --surface2:#f1eee8;
+  --text:#17171a;
+  --muted:#67656b;
+  --accent:#9c743e;
+  --accent-hover:#7f5d2f;
+  --accent-soft:rgba(156,116,62,.13);
+  --danger:#c6374e;
+  --danger-soft:rgba(198,55,78,.12);
+  --warn:#c47a1c;
+  --warn-soft:rgba(196,122,28,.14);
+  --ok:#1f7a5c;
+  --ok-soft:rgba(31,122,92,.12);
+  --btn-bg:#17171a;
+  --btn-text:#ffffff;
+  --border:#e4dfd6;
+  --shadow:0 12px 30px rgba(23,23,26,.05);
+  --shadow-lg:0 24px 56px rgba(23,23,26,.12);
+  --font-display:"Georgia","Times New Roman",serif;
+  --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+[data-theme="dark"]{
+  --bg:#0e0e11;
+  --surface:#16161b;
+  --surface2:#212128;
+  --text:#f4f3f6;
+  --muted:#9f9da6;
+  --accent:#d1a669;
+  --accent-hover:#e2ba80;
+  --accent-soft:rgba(209,166,105,.16);
+  --danger:#ef647b;
+  --danger-soft:rgba(239,100,123,.16);
+  --warn:#f0a848;
+  --warn-soft:rgba(240,168,72,.16);
+  --ok:#48b891;
+  --ok-soft:rgba(72,184,145,.16);
+  --btn-bg:#f4f3f6;
+  --btn-text:#111114;
+  --border:#2b2b34;
+  --shadow:0 12px 30px rgba(0,0,0,.32);
+  --shadow-lg:0 24px 56px rgba(0,0,0,.52);
+}
+
+[data-font="editorial"]{--font-display:"Georgia","Times New Roman",serif}
+[data-font="sans"]{--font-display:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:15px/1.65 var(--font-body);
+  transition:background .25s ease,color .25s ease;
+  overflow-x:hidden;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+
+/* Header & Search */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:35;
+  background:color-mix(in srgb,var(--surface) 90%,transparent);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:1280px;
+  margin:0 auto;
+  padding:12px clamp(14px,3.5vw,36px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:none;
+  border:0;
+  padding:0;
+  color:var(--text);
+  text-align:left;
+}
+.brand-mark{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:var(--btn-bg);
+  color:var(--btn-text);
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  font-size:13px;
+  letter-spacing:.05em;
+  flex-shrink:0;
+}
+.brand-title{
+  font-family:var(--font-display);
+  font-size:18px;
+  font-weight:700;
+  line-height:1.1;
+}
+.brand-sub{
+  display:block;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.search-box{
+  position:relative;
+  flex:1;
+  min-width:200px;
+  max-width:330px;
+}
+.search-input{
+  width:100%;
+  padding:9px 34px 9px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--text);
+  font-size:13.5px;
+  outline:none;
+  transition:border-color .18s ease,background .18s ease;
+}
+.search-input:focus{border-color:var(--accent);background:var(--surface)}
+.search-clear{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font-size:13px;
+  padding:4px 6px;
+  display:none;
+}
+.search-clear.visible{display:block}
+
+.search-results-panel{
+  position:absolute;
+  top:calc(100% + 8px);
+  left:0;
+  right:0;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:var(--shadow-lg);
+  padding:10px;
+  max-height:360px;
+  overflow-y:auto;
+  display:none;
+  z-index:50;
+}
+.search-results-panel.open{display:block}
+.search-hit{
+  width:100%;
+  text-align:left;
+  border:0;
+  background:transparent;
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:12px;
+  display:grid;
+  gap:2px;
+  transition:background .15s ease;
+}
+.search-hit:hover{background:var(--surface2)}
+.search-hit-cat{
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--accent);
+}
+.search-hit-title{font-weight:700;font-size:13.5px}
+.search-hit-sub{font-size:12px;color:var(--muted)}
+
+.nav-tabs{
+  display:flex;
+  align-items:center;
+  gap:2px;
+  flex-wrap:wrap;
+}
+.nav-tabs button{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:600;
+  transition:all .18s ease;
+}
+.nav-tabs button:hover{color:var(--text);background:var(--surface2)}
+.nav-tabs button.active{background:var(--btn-bg);color:var(--btn-text)}
+
+.theme-btn{
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  border-radius:999px;
+  padding:8px 13px;
+  font-size:12.5px;
+  font-weight:600;
+  white-space:nowrap;
+}
+
+/* Container */
+.wrap{
+  max-width:1280px;
+  margin:0 auto;
+  padding:32px clamp(14px,3.5vw,36px) 96px;
+}
+
+.eyebrow{
+  color:var(--accent);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+h1,h2,h3{
+  font-family:var(--font-display);
+  font-weight:600;
+  letter-spacing:-.02em;
+  margin:0;
+}
+.subtitle{color:var(--muted);margin:0;font-size:14px}
+
+.btn-primary{
+  background:var(--btn-bg);
+  color:var(--btn-text);
+  border:1px solid var(--btn-bg);
+  border-radius:12px;
+  padding:10px 18px;
+  font-size:13.5px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  text-decoration:none;
+  transition:opacity .18s ease,transform .15s ease;
+}
+.btn-primary:hover{opacity:.88}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+
+.btn-outline{
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 16px;
+  font-size:13.5px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  text-decoration:none;
+  transition:border-color .18s ease,background .18s ease;
+}
+.btn-outline:hover{border-color:var(--accent);background:var(--surface2)}
+
+.btn-small{
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--text);
+  border-radius:9px;
+  padding:6px 11px;
+  font-size:12px;
+  font-weight:600;
+}
+.btn-small:hover{border-color:var(--accent)}
+.btn-small.danger{
+  background:var(--danger-soft);
+  color:var(--danger);
+  border-color:transparent;
+}
+
+.page{display:none;animation:fadeIn .22s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:var(--shadow);
+}
+
+/* Home Hero + Auto-Slideshow */
+.hero-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:clamp(22px,4vw,42px);
+  box-shadow:var(--shadow);
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:28px;
+  align-items:center;
+}
+.hero-card h1{
+  font-size:clamp(28px,4vw,46px);
+  line-height:1.12;
+  margin:10px 0 14px;
+}
+.hero-card p{color:var(--muted);margin:0 0 22px;max-width:540px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.slideshow-box{
+  position:relative;
+  aspect-ratio:4/3;
+  border-radius:22px;
+  overflow:hidden;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  display:grid;
+  place-items:center;
+}
+.slideshow-box img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  cursor:pointer;
+  transition:opacity .35s ease,transform .45s ease;
+}
+.slideshow-box:hover img{transform:scale(1.02)}
+.slide-empty{
+  padding:24px;
+  text-align:center;
+  color:var(--muted);
+  display:grid;
+  gap:10px;
+  justify-items:center;
+}
+.slide-overlay{
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(14,14,17,.74);
+  backdrop-filter:blur(8px);
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+}
+.slide-nav-btns{display:flex;gap:6px}
+.slide-nav-btns button{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:12px;
+}
+
+.snapshot-strip{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-top:20px;
+}
+.snap-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px 20px;
+  box-shadow:var(--shadow);
+}
+.snap-num{
+  font-family:var(--font-display);
+  font-size:28px;
+  font-weight:700;
+  color:var(--accent);
+  line-height:1.1;
+}
+.snap-card span{color:var(--muted);font-size:13px;display:block;margin-top:4px}
+
+.home-columns{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  margin-top:20px;
+}
+
+/* Profile Card & Social Links */
+.profile-card{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:28px;
+  align-items:start;
+  margin-top:18px;
+}
+.avatar-box{
+  position:relative;
+  aspect-ratio:4/5;
+  border-radius:20px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  cursor:pointer;
+}
+.avatar-box img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  position:absolute;
+  inset:0;
+  display:none;
+}
+.avatar-box.has-img img{display:block}
+.avatar-box.has-img .avatar-placeholder{display:none}
+.avatar-box input[type="file"]{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:0;
+  cursor:pointer;
+  z-index:3;
+}
+.avatar-badge{
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  z-index:2;
+  background:rgba(14,14,17,.78);
+  color:#fff;
+  font-size:11px;
+  font-weight:600;
+  padding:5px 11px;
+  border-radius:999px;
+  pointer-events:none;
+}
+
+.social-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.social-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--text);
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  transition:border-color .18s ease,background .18s ease,transform .14s ease;
+}
+.social-btn:hover{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+  color:var(--accent);
+  transform:translateY(-1px);
+}
+.social-btn.unset{
+  opacity:.55;
+  pointer-events:none;
+}
+
+/* Announcements */
+.announcement-card{
+  border:1px solid var(--border);
+  background:var(--surface2);
+  border-radius:18px;
+  padding:18px;
+  margin-top:12px;
+}
+.announcement-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+.tag-pin{
+  display:inline-block;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  padding:3px 9px;
+  border-radius:999px;
+  background:var(--accent-soft);
+  color:var(--accent);
+}
+
+/* Event Albums */
+.albums-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:20px;
+  margin-top:18px;
+}
+.album-box{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.album-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.album-title{font-size:20px;margin:2px 0}
+.album-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.album-photos{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.album-photo{
+  position:relative;
+  aspect-ratio:1/1;
+  border-radius:14px;
+  overflow:hidden;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  cursor:pointer;
+}
+.album-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.album-photo-del{
+  position:absolute;
+  top:6px;
+  right:6px;
+  border:0;
+  border-radius:999px;
+  padding:3px 8px;
+  font-size:10.5px;
+  font-weight:700;
+  background:rgba(14,14,17,.75);
+  color:#fff;
+}
+.empty-box{
+  border:1px dashed var(--border);
+  border-radius:16px;
+  padding:24px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13.5px;
+}
+
+/* Calendar & Availability */
+.calendar-layout{
+  display:grid;
+  grid-template-columns:1.25fr .95fr;
+  gap:22px;
+  margin-top:18px;
+}
+.cal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+.cal-weekdays{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:6px;
+  text-align:center;
+  font-size:11.5px;
+  font-weight:700;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+.cal-days{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:6px;
+}
+.cal-day{
+  min-height:68px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  border-radius:12px;
+  padding:6px;
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  font-size:12.5px;
+  transition:border-color .15s ease;
+}
+.cal-day.muted{opacity:.38;background:var(--surface2)}
+.cal-day:hover:not(.muted){border-color:var(--accent)}
+.cal-day.selected{outline:2px solid var(--accent);border-color:var(--accent)}
+.cal-day.booked{
+  background:var(--danger-soft);
+  border-color:var(--danger);
+}
+.cal-day.partial{
+  background:var(--warn-soft);
+  border-color:var(--warn);
+}
+.cal-status-pill{
+  font-size:9.5px;
+  font-weight:700;
+  padding:2px 6px;
+  border-radius:999px;
+  display:inline-block;
+  width:fit-content;
+}
+.cal-status-pill.avail{background:var(--ok-soft);color:var(--ok)}
+.cal-status-pill.partial{background:var(--warn-soft);color:var(--warn)}
+.cal-status-pill.unavail{background:var(--danger-soft);color:var(--danger)}
+
+.schedule-list{display:grid;gap:10px;margin-top:14px}
+.schedule-item{
+  padding:12px 14px;
+  border-radius:14px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* Notes */
+.notes-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+  margin-top:18px;
+}
+.note-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:12px;
+}
+
+/* Reviews with Photo Uploads */
+.reviews-layout{
+  display:grid;
+  grid-template-columns:.95fr 1.25fr;
+  gap:22px;
+  margin-top:18px;
+}
+.review-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  margin-bottom:14px;
+}
+.review-photos{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin-top:12px;
+}
+.review-photos img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border-radius:12px;
+  border:1px solid var(--border);
+  cursor:pointer;
+}
+
+/* Forms & Settings */
+.field{display:grid;gap:6px;margin-bottom:13px}
+.field label{font-size:12.5px;font-weight:700}
+.field input,.field textarea,.field select{
+  width:100%;
+  padding:11px 13px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--bg);
+  color:var(--text);
+  outline:none;
+}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}
+.field textarea{min-height:88px;resize:vertical}
+
+.settings-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  margin-top:18px;
+}
+.setting-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+}
+.setting-row:last-child{border-bottom:0}
+.switch{
+  width:48px;
+  height:28px;
+  border-radius:999px;
+  background:var(--border);
+  border:0;
+  padding:3px;
+  flex-shrink:0;
+  transition:background .2s ease;
+}
+.switch span{
+  display:block;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#fff;
+  transition:transform .2s ease;
+}
+.switch.on{background:var(--accent)}
+.switch.on span{transform:translateX(20px)}
+
+/* Lightbox */
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:70;
+  background:rgba(10,10,12,.92);
+  backdrop-filter:blur(10px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.lightbox.open{display:flex}
+.lightbox img{
+  max-width:100%;
+  max-height:84vh;
+  border-radius:16px;
+  object-fit:contain;
+  box-shadow:var(--shadow-lg);
+}
+.lightbox-close{
+  position:fixed;
+  top:calc(16px + env(safe-area-inset-top));
+  right:18px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  font-size:18px;
+  display:grid;
+  place-items:center;
+}
+
+/* Mobile Bottom Nav */
+.mobile-nav{display:none}
+footer{
+  max-width:1280px;
+  margin:0 auto;
+  padding:22px clamp(14px,3.5vw,36px) 44px;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:12.5px;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+@media(max-width:1040px){
+  .hero-card,.home-columns,.profile-card,.albums-grid,.calendar-layout,.reviews-layout,.settings-grid{grid-template-columns:1fr}
+  .snapshot-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .avatar-box{max-width:220px}
+  .notes-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:820px){
+  .nav-tabs{display:none}
+  .search-box{max-width:none;order:3;flex-basis:100%}
+  .wrap{padding:22px 14px calc(92px + env(safe-area-inset-bottom))}
+  .notes-grid{grid-template-columns:1fr}
+  .mobile-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:40;
+    background:var(--surface);
+    border-top:1px solid var(--border);
+    justify-content:space-around;
+    padding:6px 2px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:0 -6px 24px rgba(0,0,0,.07);
+  }
+  .mobile-nav button{
+    border:0;
+    background:none;
+    color:var(--muted);
+    font-size:10px;
+    display:grid;
+    gap:2px;
+    justify-items:center;
+    padding:4px 3px;
+  }
+  .mobile-nav button.active{color:var(--accent);font-weight:800}
+  .mobile-nav b{font-size:15px;line-height:1.1}
+  footer{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <button type="button" class="brand" data-page="home">
+      <span class="brand-mark" id="topInitials">RV</span>
+      <span>
+        <span class="brand-title" id="topStudioName">Rhandom Visuals</span>
+        <span class="brand-sub" id="topStudioSub">Client Studio Portal</span>
+      </span>
+    </button>
+
+    <div class="search-box">
+      <input type="search" class="search-input" id="globalSearchInput" placeholder="Search albums, announcements, notes, reviews..." aria-label="Search website">
+      <button type="button" class="search-clear" id="searchClearBtn" aria-label="Clear search">✕</button>
+      <div class="search-results-panel" id="searchResultsPanel"></div>
+    </div>
+
+    <nav class="nav-tabs" aria-label="Main navigation">
+      <button type="button" class="active" data-page="home" data-i18n="nav_home">Home</button>
+      <button type="button" data-page="profile" data-i18n="nav_profile">Profile</button>
+      <button type="button" data-page="albums" data-i18n="nav_albums">Albums</button>
+      <button type="button" data-page="calendar" data-i18n="nav_calendar">Calendar &amp; Book</button>
+      <button type="button" data-page="announcements" data-i18n="nav_announcements">Announcements</button>
+      <button type="button" data-page="notes" data-i18n="nav_notes">Notes</button>
+      <button type="button" data-page="reviews" data-i18n="nav_reviews">Reviews</button>
+      <button type="button" data-page="settings" data-i18n="nav_settings">Settings</button>
+    </nav>
+
+    <button type="button" class="theme-btn" id="quickThemeBtn" aria-label="Toggle theme">☾ Dark</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section class="page active" id="home">
+    <div class="hero-card">
+      <div>
+        <div class="eyebrow" data-i18n="home_eyebrow">rhandom visuals · official client portal</div>
+        <h1 data-i18n="home_title">Structured photography workflows, event albums, and live booking schedules.</h1>
+        <p data-i18n="home_desc">Manage event photo albums, check photographer date and time availability, publish announcements, keep studio notes, and collect verified client reviews with photos.</p>
+        <div class="hero-actions">
+          <button type="button" class="btn-primary" data-page="calendar" data-i18n="home_cta_book">Check Calendar &amp; Book →</button>
+          <button type="button" class="btn-outline" data-page="albums" data-i18n="home_cta_albums">Event Albums</button>
+          <button type="button" class="btn-outline" data-page="profile" data-i18n="home_cta_profile">Profile &amp; Socials</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Photo Slideshow from Uploaded Album Photos -->
+      <div class="slideshow-box" id="homeSlideshowBox">
+        <div class="slide-empty" id="slideEmptyState">
+          <div style="font-size:30px">🖼️</div>
+          <strong data-i18n="slide_empty_title">Event Gallery Slideshow</strong>
+          <span class="subtitle" data-i18n="slide_empty_desc">Upload photos inside Event Albums to display an automatic showcase here.</span>
+          <button type="button" class="btn-small" data-page="albums" data-i18n="slide_empty_btn">Go to Albums</button>
+        </div>
+        <img id="slideActiveImg" alt="Album showcase slideshow" style="display:none">
+        <div class="slide-overlay" id="slideOverlay" style="display:none">
+          <div>
+            <strong id="slideAlbumTitle">Event Album</strong>
+            <div style="font-size:11px;opacity:.85" id="slideCounterText">1 / 1</div>
+          </div>
+          <div class="slide-nav-btns">
+            <button type="button" id="slidePrevBtn" aria-label="Previous photo">‹</button>
+            <button type="button" id="slideNextBtn" aria-label="Next photo">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="snapshot-strip">
+      <div class="snap-card">
+        <div class="snap-num" id="snapAlbums">0</div>
+        <span data-i18n="snap_albums">Event Albums</span>
+      </div>
+      <div class="snap-card">
+        <div class="snap-num" id="snapPhotos">0</div>
+        <span data-i18n="snap_photos">Uploaded Photos</span>
+      </div>
+      <div class="snap-card">
+        <div class="snap-num" id="snapBookings">0</div>
+        <span data-i18n="snap_bookings">Scheduled Bookings</span>
+      </div>
+      <div class="snap-card">
+        <div class="snap-num" id="snapReviews">0</div>
+        <span data-i18n="snap_reviews">Client Reviews</span>
+      </div>
+    </div>
+
+    <div class="home-columns">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="eyebrow" data-i18n="latest_updates">latest updates</div>
+            <h2 style="margin-top:4px" data-i18n="nav_announcements">Announcements</h2>
+          </div>
+          <button type="button" class="btn-small" data-page="announcements" data-i18n="manage_all">Manage All</button>
+        </div>
+        <div id="homeAnnouncementsPreview"></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="eyebrow" data-i18n="schedule_avail">schedule &amp; availability</div>
+            <h2 style="margin-top:4px" data-i18n="booked_dates_title">Booked / Unavailable Schedules</h2>
+          </div>
+          <button type="button" class="btn-small" data-page="calendar" data-i18n="open_calendar">Open Calendar</button>
+        </div>
+        <div class="schedule-list" id="homeSchedulePreview"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFILE (With Facebook, Instagram, TikTok Redirect Buttons) -->
+  <section class="page" id="profile">
+    <div class="eyebrow" data-i18n="profile_eyebrow">photographer &amp; studio profile</div>
+    <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="profile_title">Profile &amp; Social Channels</h1>
+    <p class="subtitle" data-i18n="profile_desc">Connect directly with Rhandom Visuals on Facebook, Instagram, and TikTok.</p>
+
+    <div class="card profile-card">
+      <label class="avatar-box" id="profileAvatarBox" title="Tap to upload profile photo">
+        <div class="avatar-placeholder" style="text-align:center;color:var(--muted);padding:12px">
+          <div style="font-size:28px;margin-bottom:4px">📷</div>
+          <div style="font-size:12px">Upload Photo</div>
+        </div>
+        <img id="profilePhotoImg" alt="Photographer profile photo">
+        <span class="avatar-badge">Change Photo</span>
+        <input type="file" id="profilePhotoInput" accept="image/*" aria-label="Upload profile photo">
+      </label>
+
+      <div>
+        <div class="eyebrow" id="profileRoleDisplay">Photographer · Rhandom Visuals</div>
+        <h2 id="profileNameDisplay" style="font-size:clamp(24px,3.2vw,34px);margin:4px 0 10px">Rhandom Visuals</h2>
+        <p class="subtitle" id="profileBioDisplay" style="line-height:1.75">
+          Delivering clean composition, natural lighting, and reliable coverage for events, portraits, and commercial projects.
+        </p>
+
+        <div class="social-row">
+          <a class="social-btn" id="fbSocialBtn" href="#" target="_blank" rel="noopener noreferrer">
+            <span>f</span> Facebook ↗
+          </a>
+          <a class="social-btn" id="igSocialBtn" href="#" target="_blank" rel="noopener noreferrer">
+            <span>◎</span> Instagram ↗
+          </a>
+          <a class="social-btn" id="ttSocialBtn" href="#" target="_blank" rel="noopener noreferrer">
+            <span>♪</span> TikTok ↗
+          </a>
+          <button type="button" class="btn-small" data-page="settings" data-i18n="edit_links_btn">Edit Links in Settings</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENT ALBUMS -->
+  <section class="page" id="albums">
+    <div class="eyebrow" data-i18n="albums_eyebrow">event galleries</div>
+    <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="nav_albums">Event Albums</h1>
+    <p class="subtitle" data-i18n="albums_desc">Create an event album, rename it anytime, and upload event photos directly. Uploaded photos automatically appear in the Home slideshow.</p>
+
+    <div class="card" style="margin-top:18px">
+      <form id="createAlbumForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+        <div class="field" style="flex:1;min-width:220px;margin-bottom:0">
+          <label for="newAlbumName" data-i18n="new_album_label">New Event Album Name</label>
+          <input id="newAlbumName" placeholder="e.g. Santos Civil Wedding · Legazpi" required>
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="create_album_btn">＋ Create Event Album</button>
+      </form>
+    </div>
+
+    <div class="albums-grid" id="albumsContainer"></div>
+  </section>
+
+  <!-- CALENDAR & BOOKING + TIME SLOTS + CANCEL/DELETE -->
+  <section class="page" id="calendar">
+    <div class="eyebrow" data-i18n="cal_eyebrow">schedule &amp; reservations</div>
+    <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="cal_title">Booking Calendar &amp; Availability</h1>
+    <p class="subtitle" data-i18n="cal_desc">Supports Whole Day and Half-Day (Morning / Afternoon) bookings. If a morning slot is booked, afternoon slots remain open.</p>
+
+    <div class="calendar-layout">
+      <!-- Left: Interactive Calendar -->
+      <div class="card">
+        <div class="cal-head">
+          <div>
+            <div class="eyebrow" data-i18n="monthly_sched">monthly schedule</div>
+            <h2 id="calMonthTitle" style="margin-top:2px"></h2>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button type="button" class="btn-small" id="prevMonthBtn">← Prev</button>
+            <button type="button" class="btn-small" id="todayMonthBtn">Today</button>
+            <button type="button" class="btn-small" id="nextMonthBtn">Next →</button>
+          </div>
+        </div>
+
+        <div class="cal-weekdays">
+          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+        <div class="cal-days" id="calendarDays"></div>
+
+        <div style="margin-top:14px;font-size:12.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap">
+          <span><span class="cal-status-pill avail">Open</span> Fully available</span>
+          <span><span class="cal-status-pill partial">Half-Day</span> AM or PM booked (other half open)</span>
+          <span><span class="cal-status-pill unavail">Full</span> Whole day booked</span>
+        </div>
+      </div>
+
+      <!-- Right: Client Booking Request + Schedule Manager -->
+      <div style="display:grid;gap:18px">
+        <form class="card" id="clientBookingForm">
+          <div class="eyebrow" data-i18n="client_req_eyebrow">client booking request</div>
+          <h3 style="margin:4px 0 12px" data-i18n="book_sched_title">Book a Date &amp; Time</h3>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="field">
+              <label for="bookDateInput" data-i18n="date_label">Date</label>
+              <input type="date" id="bookDateInput" required>
+            </div>
+            <div class="field">
+              <label for="bookSlotSelect" data-i18n="time_slot_label">Time Slot</label>
+              <select id="bookSlotSelect">
+                <option value="Whole Day">Whole Day (8:00 AM – 6:00 PM)</option>
+                <option value="Morning (AM)">Morning / Half-Day (8:00 AM – 12:00 PM)</option>
+                <option value="Afternoon (PM)">Afternoon / Half-Day (1:00 PM – 6:00 PM)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="bookCustomTime" data-i18n="exact_time_label">Specific Time (Optional)</label>
+            <input id="bookCustomTime" placeholder="e.g. 2:00 PM – 5:00 PM">
+          </div>
+
+          <div id="selectedDateAlert" style="margin-bottom:12px;font-size:13px"></div>
+
+          <div class="field">
+            <label for="bookClientName" data-i18n="client_name_label">Client Name</label>
+            <input id="bookClientName" required placeholder="e.g. Marco Reyes">
+          </div>
+
+          <div class="field">
+            <label for="bookEventType" data-i18n="event_type_label">Event / Shoot Type</label>
+            <input id="bookEventType" required placeholder="e.g. Corporate Portrait Shoot">
+          </div>
+
+          <button type="submit" class="btn-primary" id="submitBookingBtn" data-i18n="submit_booking_btn">Confirm Booking</button>
+          <div id="bookingStatusMsg" class="subtitle" style="margin-top:10px" aria-live="polite"></div>
+        </form>
+
+        <div class="card">
+          <div class="eyebrow" data-i18n="manage_sched_eyebrow">bookings &amp; unavailable dates</div>
+          <h3 style="margin:4px 0 10px" data-i18n="manage_sched_title">Manage / Cancel Bookings</h3>
+          <p class="subtitle" style="margin-bottom:12px" data-i18n="manage_sched_desc">Set an unavailable schedule manually, edit an entry, or click Cancel / Delete if a client cancels.</p>
+
+          <form id="setUnavailableForm" style="display:grid;gap:10px">
+            <input type="hidden" id="editingScheduleId">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div class="field" style="margin-bottom:0">
+                <label for="unavailDate">Date</label>
+                <input type="date" id="unavailDate" required>
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label for="unavailSlot">Time Slot</label>
+                <select id="unavailSlot">
+                  <option value="Whole Day">Whole Day</option>
+                  <option value="Morning (AM)">Morning (AM)</option>
+                  <option value="Afternoon (PM)">Afternoon (PM)</option>
+                </select>
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label for="unavailReason">Client / Event / Time Details</label>
+              <input id="unavailReason" required placeholder="e.g. Booked — Afternoon Portrait (1PM-5PM)">
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button type="submit" class="btn-primary" id="saveScheduleBtn">Add Unavailable Slot</button>
+              <button type="button" class="btn-outline" id="cancelEditScheduleBtn" style="display:none">Cancel Edit</button>
+            </div>
+          </form>
+
+          <div class="schedule-list" id="scheduleManagerList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANNOUNCEMENTS -->
+  <section class="page" id="announcements">
+    <div class="eyebrow" data-i18n="ann_eyebrow">studio notices</div>
+    <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="nav_announcements">Announcements</h1>
+    <p class="subtitle" data-i18n="ann_desc">Publish, edit, or remove announcements for clients and visitors.</p>
+
+    <div class="card" style="margin-top:18px">
+      <form id="announcementForm">
+        <input type="hidden" id="editAnnounceId">
+        <div class="field">
+          <label for="announceTitle">Announcement Title</label>
+          <input id="announceTitle" required placeholder="e.g. Booking Slots Now Open">
+        </div>
+        <div class="field">
+          <label for="announceBody">Details</label>
+          <textarea id="announceBody" required placeholder="Write schedule updates, promo details, or studio notices..."></textarea>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="submit" class="btn-primary" id="saveAnnounceBtn">Publish Announcement</button>
+          <button type="button" class="btn-outline" id="cancelAnnounceEditBtn" style="display:none">Cancel</button>
+        </div>
+      </form>
+
+      <div id="announcementsList" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
+  <section class="page" id="notes">
+    <div class="eyebrow" data-i18n="notes_eyebrow">workspace scratchpad</div>
+    <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="nav_notes">Notes</h1>
+    <p class="subtitle" data-i18n="notes_desc">Keep organized shoot notes, client briefs, lighting setups, or reminders.</p>
+
+    <div class="card" style="margin-top:18px">
+      <form id="noteForm">
+        <input type="hidden" id="editNoteId">
+        <div class="field">
+          <label for="noteTitleInput">Note Title</label>
+          <input id="noteTitleInput" required placeholder="e.g. Lens & Lighting Checklist">
+        </div>
+        <div class="field">
+          <label for="noteContentInput">Note Content</label>
+          <textarea id="noteContentInput" required placeholder="Write your note here..."></textarea>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="submit" class="btn-primary" id="saveNoteBtn">Save Note</button>
+          <button type="button" class="btn-outline" id="cancelNoteEditBtn" style="display:none">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="notes-grid" id="notesContainer"></div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="page" id="reviews">
+    <div class="eyebrow" data-i18n="rev_eyebrow">client feedback</div>
+    <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="rev_title">Client Reviews</h1>
+    <p class="subtitle" data-i18n="rev_desc">Clients can leave a rating, comment, and upload photos from their shoot.</p>
+
+    <div class="reviews-layout">
+      <form class="card" id="reviewForm">
+        <h3 style="margin-bottom:12px" data-i18n="leave_review">Leave a Review</h3>
+
+        <div class="field">
+          <label for="revAuthor">Your Name</label>
+          <input id="revAuthor" required placeholder="e.g. Clarisse Villanueva">
+        </div>
+
+        <div class="field">
+          <label for="revEvent">Event / Session</label>
+          <input id="revEvent" placeholder="e.g. Engagement Shoot">
+        </div>
+
+        <div class="field">
+          <label for="revRating">Rating</label>
+          <select id="revRating">
+            <option value="5">★★★★★ (5.0)</option>
+            <option value="4">★★★★☆ (4.0)</option>
+            <option value="3">★★★☆☆ (3.0)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="revComment">Review Message</label>
+          <textarea id="revComment" required placeholder="Share your experience with Rhandom Visuals..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="revPhotosInput">Upload Photos (Optional)</label>
+          <input type="file" id="revPhotosInput" accept="image/*" multiple>
+          <div id="revUploadPreview" class="review-photos"></div>
+        </div>
+
+        <button type="submit" class="btn-primary">Submit Review</button>
+      </form>
+
+      <div id="reviewsList"></div>
+    </div>
+  </section>
+
+  <!-- SETTINGS (Language Switcher, Appearance, Studio Info & Social Links) -->
+  <section class="page" id="settings">
+    <div class="eyebrow" data-i18n="set_eyebrow">portal configuration</div>
+    <h1 style="font-size:clamp(28px,4vw,40px);margin:4px 0 6px" data-i18n="nav_settings">Settings</h1>
+    <p class="subtitle" data-i18n="set_desc">Customize language, studio identity, social media links, and display theme.</p>
+
+    <div class="settings-grid">
+      <div class="card">
+        <h3 style="margin-bottom:10px" data-i18n="set_appearance">Appearance &amp; Language</h3>
+
+        <div class="field">
+          <label for="languageSelect" data-i18n="set_lang_label">Website Language</label>
+          <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="tl">Tagalog / Filipino</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <strong data-i18n="set_dark_label">Dark Mode</strong>
+            <p class="subtitle" style="font-size:13px" data-i18n="set_dark_sub">Toggle dark or light studio surface</p>
+          </div>
+          <button type="button" class="switch" id="darkSwitch" aria-label="Toggle dark mode"><span></span></button>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <strong data-i18n="set_sys_label">Follow Device Theme</strong>
+            <p class="subtitle" style="font-size:13px" data-i18n="set_sys_sub">Match system light/dark mode</p>
+          </div>
+          <button type="button" class="switch" id="systemSwitch" aria-label="Follow device theme"><span></span></button>
+        </div>
+
+        <div class="field" style="margin-top:14px">
+          <label for="fontChoiceSelect" data-i18n="set_font_label">Heading Font Style</label>
+          <select id="fontChoiceSelect">
+            <option value="editorial">Editorial Serif</option>
+            <option value="sans">Modern Sans</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:10px" data-i18n="set_brand_title">Studio Profile &amp; Social Links</h3>
+        <div class="field">
+          <label for="setStudioName">Studio / Photographer Name</label>
+          <input id="setStudioName" value="Rhandom Visuals">
+        </div>
+        <div class="field">
+          <label for="setStudioSub">Subtitle</label>
+          <input id="setStudioSub" value="Client Studio Portal">
+        </div>
+        <div class="field">
+          <label for="setProfileBio">Profile Bio</label>
+          <textarea id="setProfileBio"></textarea>
+        </div>
+        <div class="field">
+          <label for="setFbUrl">Facebook Link</label>
+          <input id="setFbUrl" type="text" placeholder="https://facebook.com/yourpage">
+        </div>
+        <div class="field">
+          <label for="setIgUrl">Instagram Link</label>
+          <input id="setIgUrl" type="text" placeholder="https://instagram.com/yourhandle">
+        </div>
+        <div class="field">
+          <label for="setTtUrl">TikTok Link</label>
+          <input id="setTtUrl" type="text" placeholder="https://tiktok.com/@yourhandle">
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button type="button" class="btn-primary" id="savePortalSettingsBtn" data-i18n="save_btn">Save Settings</button>
+          <span class="subtitle" id="portalSettingsMsg" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span id="footerStudioLabel">Rhandom Visuals</span>
+  <span>Legazpi City, Philippines</span>
+</footer>
+
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <button type="button" class="active" data-page="home"><b>⌂</b>Home</button>
+  <button type="button" data-page="profile"><b>◉</b>Profile</button>
+  <button type="button" data-page="albums"><b>▦</b>Albums</button>
+  <button type="button" data-page="calendar"><b>📅</b>Book</button>
+  <button type="button" data-page="announcements"><b>📢</b>News</button>
+  <button type="button" data-page="notes"><b>✎</b>Notes</button>
+  <button type="button" data-page="reviews"><b>★</b>Reviews</button>
+  <button type="button" data-page="settings"><b>⚙</b>Settings</button>
+</nav>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Full photo preview">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close preview">✕</button>
+  <img id="lightboxImg" alt="Full size photo">
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const uid = () => "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
+
+  const todayISO = () => {
+    const d = new Date();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${d.getFullYear()}-${m}-${day}`;
+  };
+
+  function normalizeUrl(raw) {
+    const val = String(raw || "").trim();
+    if (!val) return "";
+    if (/^https?:\/\//i.test(val)) return val;
+    return "https://" + val;
+  }
+
+  // Translations (English & Tagalog)
+  const I18N = {
+    en: {
+      nav_home: "Home",
+      nav_profile: "Profile",
+      nav_albums: "Albums",
+      nav_calendar: "Calendar & Book",
+      nav_announcements: "Announcements",
+      nav_notes: "Notes",
+      nav_reviews: "Reviews",
+      nav_settings: "Settings",
+      home_eyebrow: "rhandom visuals · official client portal",
+      home_title: "Structured photography workflows, event albums, and live booking schedules.",
+      home_desc: "Manage event photo albums, check photographer date and time availability, publish announcements, keep studio notes, and collect verified client reviews with photos.",
+      home_cta_book: "Check Calendar & Book →",
+      home_cta_albums: "Event Albums",
+      home_cta_profile: "Profile & Socials",
+      slide_empty_title: "Event Gallery Slideshow",
+      slide_empty_desc: "Upload photos inside Event Albums to display an automatic showcase here.",
+      slide_empty_btn: "Go to Albums",
+      snap_albums: "Event Albums",
+      snap_photos: "Uploaded Photos",
+      snap_bookings: "Scheduled Bookings",
+      snap_reviews: "Client Reviews",
+      latest_updates: "latest updates",
+      manage_all: "Manage All",
+      schedule_avail: "schedule & availability",
+      booked_dates_title: "Booked / Unavailable Schedules",
+      open_calendar: "Open Calendar",
+      profile_eyebrow: "photographer & studio profile",
+      profile_title: "Profile & Social Channels",
+      profile_desc: "Connect directly with Rhandom Visuals on Facebook, Instagram, and TikTok.",
+      edit_links_btn: "Edit Links in Settings",
+      albums_eyebrow: "event galleries",
+      albums_desc: "Create an event album, rename it anytime, and upload event photos directly. Uploaded photos automatically appear in the Home slideshow.",
+      new_album_label: "New Event Album Name",
+      create_album_btn: "＋ Create Event Album",
+      cal_eyebrow: "schedule & reservations",
+      cal_title: "Booking Calendar & Availability",
+      cal_desc: "Supports Whole Day and Half-Day (Morning / Afternoon) bookings. If a morning slot is booked, afternoon slots remain open.",
+      monthly_sched: "monthly schedule",
+      client_req_eyebrow: "client booking request",
+      book_sched_title: "Book a Date & Time",
+      date_label: "Date",
+      time_slot_label: "Time Slot",
+      exact_time_label: "Specific Time (Optional)",
+      client_name_label: "Client Name",
+      event_type_label: "Event / Shoot Type",
+      submit_booking_btn: "Confirm Booking",
+      manage_sched_eyebrow: "bookings & unavailable dates",
+      manage_sched_title: "Manage / Cancel Bookings",
+      manage_sched_desc: "Set an unavailable schedule manually, edit an entry, or click Cancel / Delete if a client cancels.",
+      ann_eyebrow: "studio notices",
+      ann_desc: "Publish, edit, or remove announcements for clients and visitors.",
+      notes_eyebrow: "workspace scratchpad",
+      notes_desc: "Keep organized shoot notes, client briefs, lighting setups, or reminders.",
+      rev_eyebrow: "client feedback",
+      rev_title: "Client Reviews",
+      rev_desc: "Clients can leave a rating, comment, and upload photos from their shoot.",
+      leave_review: "Leave a Review",
+      set_eyebrow: "portal configuration",
+      set_desc: "Customize language, studio identity, social media links, and display theme.",
+      set_appearance: "Appearance & Language",
+      set_lang_label: "Website Language",
+      set_dark_label: "Dark Mode",
+      set_dark_sub: "Toggle dark or light studio surface",
+      set_sys_label: "Follow Device Theme",
+      set_sys_sub: "Match system light/dark mode",
+      set_font_label: "Heading Font Style",
+      set_brand_title: "Studio Profile & Social Links",
+      save_btn: "Save Settings"
+    },
+    tl: {
+      nav_home: "Home",
+      nav_profile: "Profile",
+      nav_albums: "Mga Album",
+      nav_calendar: "Kalendaryo at Book",
+      nav_announcements: "Anunsyo",
+      nav_notes: "Mga Tala",
+      nav_reviews: "Reviews",
+      nav_settings: "Settings",
+      home_eyebrow: "rhandom visuals · opisyal na portal",
+      home_title: "Maayos na event albums, live booking schedule, at studio portfolio.",
+      home_desc: "Mag-upload ng event photos, tingnan ang bakanteng petsa at oras ng photographer, mag-post ng anunsyo, at mag-iwan ng client reviews.",
+      home_cta_book: "Tingnan ang Kalendaryo →",
+      home_cta_albums: "Mga Event Album",
+      home_cta_profile: "Profile at Socials",
+      slide_empty_title: "Slideshow ng mga Larawan",
+      slide_empty_desc: "Mag-upload ng mga picture sa Event Albums para lumabas at mag-slideshow dito sa Home.",
+      slide_empty_btn: "Pumunta sa Albums",
+      snap_albums: "Mga Event Album",
+      snap_photos: "Na-upload na Larawan",
+      snap_bookings: "Mga Naka-book na Petsa",
+      snap_reviews: "Client Reviews",
+      latest_updates: "pinakabagong balita",
+      manage_all: "Tingnan Lahat",
+      schedule_avail: "iskedyul at availability",
+      booked_dates_title: "Mga Naka-book / Hindi Available",
+      open_calendar: "Buksan ang Kalendaryo",
+      profile_eyebrow: "profile ng photographer at studio",
+      profile_title: "Profile at Social Media",
+      profile_desc: "Bisitahin ang opisyal na Facebook, Instagram, at TikTok ng Rhandom Visuals.",
+      edit_links_btn: "I-edit ang Links sa Settings",
+      albums_eyebrow: "mga event gallery",
+      albums_desc: "Gumawa ng event album, palitan ang pangalan, at mag-upload ng mga larawan. Automatic na lalabas sa Home slideshow ang mga na-upload na picture.",
+      new_album_label: "Pangalan ng Bagong Event Album",
+      create_album_btn: "＋ Gumawa ng Event Album",
+      cal_eyebrow: "iskedyul at reserbasyon",
+      cal_title: "Kalendaryo at Pag-book",
+      cal_desc: "May Whole Day at Half-Day (Morning / Afternoon) booking. Kung morning lang ang naka-book, puwede pa magpa-book sa hapon.",
+      monthly_sched: "buwanang iskedyul",
+      client_req_eyebrow: "magpa-book ng shoot",
+      book_sched_title: "Pumili ng Petsa at Oras",
+      date_label: "Petsa",
+      time_slot_label: "Oras / Slot",
+      exact_time_label: "Eksaktong Oras (Opsyonal)",
+      client_name_label: "Pangalan ng Client",
+      event_type_label: "Uri ng Event / Shoot",
+      submit_booking_btn: "I-book ang Iskedyul",
+      manage_sched_eyebrow: "mga booking at hindi available na petsa",
+      manage_sched_title: "I-edit o I-cancel ang Booking",
+      manage_sched_desc: "Mag-set ng unavailable na petsa o i-click ang Cancel / Delete kung nag-cancel ang client.",
+      ann_eyebrow: "mga abiso ng studio",
+      ann_desc: "Mag-post, mag-edit, o mag-delete ng anunsyo para sa mga kliyente.",
+      notes_eyebrow: "mga tala sa trabaho",
+      notes_desc: "Mag-save ng mga paalala, shot list, o detalye ng kliyente.",
+      rev_eyebrow: "komento ng mga kliyente",
+      rev_title: "Client Reviews",
+      rev_desc: "Puwedeng mag-iwan ng rating, komento, at mag-upload ng mga larawan mula sa shoot.",
+      leave_review: "Mag-iwan ng Review",
+      set_eyebrow: "ayos ng portal",
+      set_desc: "Palitan ang wika, pangalan ng studio, social media links, at kulay ng website.",
+      set_appearance: "Hitsura at Wika",
+      set_lang_label: "Wika ng Website",
+      set_dark_label: "Dark Mode",
+      set_dark_sub: "Lumipat sa madilim o maliwanag na tema",
+      set_sys_label: "Sundan ang Tema ng Device",
+      set_sys_sub: "Ipares sa light/dark mode ng phone o PC",
+      set_font_label: "Istilo ng Font",
+      set_brand_title: "Impormasyon ng Studio at Social Links",
+      save_btn: "I-save ang Settings"
+    }
+  };
+
+  // App State — Starts with ZERO bookings!
+  let state = {
+    lang: "en",
+    theme: "light",
+    systemTheme: false,
+    font: "editorial",
+    studioName: "Rhandom Visuals",
+    studioSub: "Client Studio Portal",
+    profileBio: "Delivering clean composition, natural lighting, and reliable coverage for events, portraits, and commercial projects.",
+    profilePhoto: "",
+    socialFacebook: "",
+    socialInstagram: "",
+    socialTiktok: "",
+    albums: [
+      { id: uid(), title: "Sample Event Folder", photos: [] }
+    ],
+    blockedDates: [], // EMPTY BY DEFAULT (walang booking sa simula)
+    announcements: [
+      {
+        id: uid(),
+        title: "Welcome to Rhandom Visuals",
+        body: "Check the Calendar & Book tab to reserve a Whole Day or Half-Day slot, view event albums, or post a client review.",
+        createdAt: todayISO()
+      }
+    ],
+    notes: [],
+    reviews: []
+  };
+
+  try {
+    const raw = localStorage.getItem("rhandomVisualsPortalV2");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = Object.assign({}, state, parsed);
+    }
+  } catch (e) {}
+
+  function saveState() {
+    try {
+      localStorage.setItem("rhandomVisualsPortalV2", JSON.stringify(state));
+    } catch (e) {
+      alert("Browser storage limit reached. Try removing large uploaded photos.");
+    }
+    renderAll();
+  }
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Apply Language
+  function applyLanguage() {
+    const dict = I18N[state.lang] || I18N.en;
+    document.documentElement.lang = state.lang || "en";
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const key = el.getAttribute("data-i18n");
+      if (dict[key]) el.textContent = dict[key];
+    });
+    if ($("languageSelect")) $("languageSelect").value = state.lang || "en";
+  }
+
+  // Theme & Appearance
+  function resolvedTheme() {
+    if (state.systemTheme && window.matchMedia) {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    return state.theme || "light";
+  }
+
+  function applyTheme() {
+    const t = resolvedTheme();
+    document.documentElement.setAttribute("data-theme", t);
+    document.documentElement.setAttribute("data-font", state.font || "editorial");
+
+    if ($("quickThemeBtn")) $("quickThemeBtn").textContent = t === "dark" ? "☀ Light" : "☾ Dark";
+    if ($("darkSwitch")) $("darkSwitch").classList.toggle("on", t === "dark");
+    if ($("systemSwitch")) $("systemSwitch").classList.toggle("on", Boolean(state.systemTheme));
+    if ($("fontChoiceSelect")) $("fontChoiceSelect").value = state.font || "editorial";
+  }
+
+  function toggleTheme() {
+    state.systemTheme = false;
+    state.theme = resolvedTheme() === "dark" ? "light" : "dark";
+    saveState();
+  }
+
+  if ($("quickThemeBtn")) $("quickThemeBtn").addEventListener("click", toggleTheme);
+  if ($("darkSwitch")) $("darkSwitch").addEventListener("click", toggleTheme);
+  if ($("systemSwitch")) {
+    $("systemSwitch").addEventListener("click", () => {
+      state.systemTheme = !state.systemTheme;
+      saveState();
+    });
+  }
+  if ($("languageSelect")) {
+    $("languageSelect").addEventListener("change", (e) => {
+      state.lang = e.target.value;
+      saveState();
+    });
+  }
+  if ($("fontChoiceSelect")) {
+    $("fontChoiceSelect").addEventListener("change", (e) => {
+      state.font = e.target.value;
+      saveState();
+    });
+  }
+
+  if ($("savePortalSettingsBtn")) {
+    $("savePortalSettingsBtn").addEventListener("click", () => {
+      state.lang = ($("languageSelect") && $("languageSelect").value) || state.lang;
+      state.studioName = ($("setStudioName").value || "").trim() || "Rhandom Visuals";
+      state.studioSub = ($("setStudioSub").value || "").trim() || "Client Studio Portal";
+      state.profileBio = ($("setProfileBio").value || "").trim() || state.profileBio;
+      state.socialFacebook = ($("setFbUrl").value || "").trim();
+      state.socialInstagram = ($("setIgUrl").value || "").trim();
+      state.socialTiktok = ($("setTtUrl").value || "").trim();
+      saveState();
+      if ($("portalSettingsMsg")) {
+        $("portalSettingsMsg").textContent = state.lang === "tl" ? "Na-save na." : "Settings saved.";
+      }
+    });
+  }
+
+  // Page Navigation
+  function showPage(pageId) {
+    if (!$(pageId)) return;
+    document.querySelectorAll(".page").forEach((p) => p.classList.toggle("active", p.id === pageId));
+    document.querySelectorAll("[data-page]").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.page === pageId);
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  document.querySelectorAll("[data-page]").forEach((btn) => {
+    btn.addEventListener("click", () => showPage(btn.dataset.page));
+  });
+
+  // Lightbox
+  function openLightbox(src) {
+    if (!src || !$("lightbox") || !$("lightboxImg")) return;
+    $("lightboxImg").src = src;
+    $("lightbox").classList.add("open");
+  }
+  function closeLightbox() {
+    if ($("lightbox")) $("lightbox").classList.remove("open");
+  }
+  if ($("lightboxClose")) $("lightboxClose").addEventListener("click", closeLightbox);
+  if ($("lightbox")) {
+    $("lightbox").addEventListener("click", (e) => {
+      if (e.target === $("lightbox")) closeLightbox();
+    });
+  }
+
+  // Image Compressor
+  function compressImage(file, maxDim, cb) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          else { w = Math.round((w * maxDim) / h); h = maxDim; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        cb(canvas.toDataURL("image/jpeg", 0.84));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // =========================================================
+  // HOME AUTO-SLIDESHOW (From Uploaded Event Album Photos)
+  // =========================================================
+  let slideIndex = 0;
+  let slideTimer = null;
+
+  function getAllAlbumSlides() {
+    const slides = [];
+    (state.albums || []).forEach((alb) => {
+      (alb.photos || []).forEach((ph) => {
+        if (ph && ph.src) {
+          slides.push({ src: ph.src, albumTitle: alb.title });
+        }
+      });
+    });
+    return slides;
+  }
+
+  function showSlideAt(idx) {
+    const slides = getAllAlbumSlides();
+    const emptyEl = $("slideEmptyState");
+    const imgEl = $("slideActiveImg");
+    const overlayEl = $("slideOverlay");
+
+    if (!emptyEl || !imgEl || !overlayEl) return;
+
+    if (!slides.length) {
+      emptyEl.style.display = "grid";
+      imgEl.style.display = "none";
+      overlayEl.style.display = "none";
+      clearInterval(slideTimer);
+      return;
+    }
+
+    slideIndex = ((idx % slides.length) + slides.length) % slides.length;
+    const current = slides[slideIndex];
+
+    emptyEl.style.display = "none";
+    imgEl.style.display = "block";
+    overlayEl.style.display = "flex";
+
+    imgEl.src = current.src;
+    imgEl.onclick = () => openLightbox(current.src);
+    if ($("slideAlbumTitle")) $("slideAlbumTitle").textContent = current.albumTitle;
+    if ($("slideCounterText")) $("slideCounterText").textContent = `${slideIndex + 1} / ${slides.length}`;
+  }
+
+  function startSlideshowLoop() {
+    clearInterval(slideTimer);
+    const slides = getAllAlbumSlides();
+    showSlideAt(slideIndex);
+    if (slides.length > 1) {
+      slideTimer = setInterval(() => {
+        showSlideAt(slideIndex + 1);
+      }, 3600);
+    }
+  }
+
+  if ($("slidePrevBtn")) {
+    $("slidePrevBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      showSlideAt(slideIndex - 1);
+      startSlideshowLoop();
+    });
+  }
+  if ($("slideNextBtn")) {
+    $("slideNextBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      showSlideAt(slideIndex + 1);
+      startSlideshowLoop();
+    });
+  }
+
+  // =========================================================
+  // PROFILE PHOTO & SOCIAL REDIRECT BUTTONS (FB, IG, TIKTOK)
+  // =========================================================
+  if ($("profilePhotoInput")) {
+    $("profilePhotoInput").addEventListener("change", (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      compressImage(file, 600, (dataUrl) => {
+        state.profilePhoto = dataUrl;
+        saveState();
+      });
+      ev.target.value = "";
+    });
+  }
+
+  function configureSocialButton(btnEl, rawUrl) {
+    if (!btnEl) return;
+    const clean = normalizeUrl(rawUrl);
+    if (clean) {
+      btnEl.href = clean;
+      btnEl.classList.remove("unset");
+      btnEl.removeAttribute("aria-disabled");
+    } else {
+      btnEl.href = "#";
+      btnEl.classList.add("unset");
+      btnEl.setAttribute("aria-disabled", "true");
+    }
+  }
+
+  function renderProfile() {
+    const box = $("profileAvatarBox");
+    const img = $("profilePhotoImg");
+    if (box && img) {
+      if (state.profilePhoto) {
+        img.src = state.profilePhoto;
+        box.classList.add("has-img");
+      } else {
+        img.removeAttribute("src");
+        box.classList.remove("has-img");
+      }
+    }
+
+    if ($("profileNameDisplay")) $("profileNameDisplay").textContent = state.studioName || "Rhandom Visuals";
+    if ($("profileRoleDisplay")) $("profileRoleDisplay").textContent = `Photographer · ${state.studioName || "Rhandom Visuals"}`;
+    if ($("profileBioDisplay")) $("profileBioDisplay").textContent = state.profileBio || "";
+
+    configureSocialButton($("fbSocialBtn"), state.socialFacebook);
+    configureSocialButton($("igSocialBtn"), state.socialInstagram);
+    configureSocialButton($("ttSocialBtn"), state.socialTiktok);
+  }
+
+  // =========================================================
+  // EVENT ALBUMS (Create, Rename, Upload Photos, Delete)
+  // =========================================================
+  if ($("createAlbumForm")) {
+    $("createAlbumForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = ($("newAlbumName").value || "").trim();
+      if (!title) return;
+      state.albums.unshift({ id: uid(), title, photos: [] });
+      $("newAlbumName").value = "";
+      saveState();
+    });
+  }
+
+  function renderAlbums() {
+    const container = $("albumsContainer");
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (!state.albums.length) {
+      container.innerHTML = '<div class="empty-box" style="grid-column:1/-1">No event albums yet. Create one above to start uploading event photos.</div>';
+      return;
+    }
+
+    state.albums.forEach((album) => {
+      const box = document.createElement("div");
+      box.className = "album-box";
+      box.id = "album_" + album.id;
+
+      const header = document.createElement("div");
+      header.className = "album-header";
+
+      const titleWrap = document.createElement("div");
+      titleWrap.innerHTML = `<div class="eyebrow">${album.photos.length} photo(s)</div><h3 class="album-title">${escapeHtml(album.title)}</h3>`;
+
+      const controls = document.createElement("div");
+      controls.className = "album-controls";
+
+      const renameBtn = document.createElement("button");
+      renameBtn.type = "button";
+      renameBtn.className = "btn-small";
+      renameBtn.textContent = state.lang === "tl" ? "Palitan ang Pangalan" : "Rename";
+      renameBtn.addEventListener("click", () => {
+        const nextName = prompt("Enter new event album name:", album.title);
+        if (nextName && nextName.trim()) {
+          album.title = nextName.trim();
+          saveState();
+        }
+      });
+
+      const uploadLabel = document.createElement("label");
+      uploadLabel.className = "btn-small";
+      uploadLabel.style.background = "var(--btn-bg)";
+      uploadLabel.style.color = "var(--btn-text)";
+      uploadLabel.style.cursor = "pointer";
+      uploadLabel.textContent = state.lang === "tl" ? "＋ Mag-upload ng Pic" : "＋ Upload Photos";
+
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = "image/*";
+      fileInput.multiple = true;
+      fileInput.style.display = "none";
+      fileInput.addEventListener("change", (ev) => {
+        const files = Array.from(ev.target.files || []);
+        files.forEach((file) => {
+          compressImage(file, 1024, (dataUrl) => {
+            album.photos.push({ id: uid(), src: dataUrl, name: file.name });
+            saveState();
+          });
+        });
+        ev.target.value = "";
+      });
+      uploadLabel.appendChild(fileInput);
+
+      const delAlbumBtn = document.createElement("button");
+      delAlbumBtn.type = "button";
+      delAlbumBtn.className = "btn-small danger";
+      delAlbumBtn.textContent = "Delete";
+      delAlbumBtn.addEventListener("click", () => {
+        if (confirm(`Delete album "${album.title}"?`)) {
+          state.albums = state.albums.filter((a) => a.id !== album.id);
+          saveState();
+        }
+      });
+
+      controls.appendChild(renameBtn);
+      controls.appendChild(uploadLabel);
+      controls.appendChild(delAlbumBtn);
+
+      header.appendChild(titleWrap);
+      header.appendChild(controls);
+      box.appendChild(header);
+
+      if (!album.photos.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-box";
+        empty.textContent = state.lang === "tl"
+          ? "Wala pang larawan sa album na ito. I-click ang \"＋ Mag-upload ng Pic\"."
+          : "No photos uploaded in this event album yet. Tap \"＋ Upload Photos\" to add.";
+        box.appendChild(empty);
+      } else {
+        const grid = document.createElement("div");
+        grid.className = "album-photos";
+        album.photos.forEach((ph) => {
+          const item = document.createElement("div");
+          item.className = "album-photo";
+
+          const img = document.createElement("img");
+          img.src = ph.src;
+          img.alt = ph.name || album.title;
+          img.addEventListener("click", () => openLightbox(ph.src));
+
+          const rm = document.createElement("button");
+          rm.type = "button";
+          rm.className = "album-photo-del";
+          rm.textContent = "✕";
+          rm.addEventListener("click", (e) => {
+            e.stopPropagation();
+            album.photos = album.photos.filter((p) => p.id !== ph.id);
+            saveState();
+          });
+
+          item.appendChild(img);
+          item.appendChild(rm);
+          grid.appendChild(item);
+        });
+        box.appendChild(grid);
+      }
+
+      container.appendChild(box);
+    });
+  }
+
+  // =========================================================
+  // CALENDAR + HALF-DAY/WHOLE-DAY TIME SLOTS + CANCEL/DELETE
+  // =========================================================
+  let viewYear = new Date().getFullYear();
+  let viewMonth = new Date().getMonth();
+  let selectedDateISO = todayISO();
+
+  function getBookingsForDate(iso) {
+    return state.blockedDates.filter((b) => b.date === iso);
+  }
+
+  function isSlotTaken(iso, slot) {
+    const existing = getBookingsForDate(iso);
+    if (!existing.length) return false;
+    if (existing.some((b) => (b.slot || "Whole Day") === "Whole Day")) return true;
+    if (slot === "Whole Day") return existing.length > 0;
+    return existing.some((b) => b.slot === slot);
+  }
+
+  function updateSelectedDateAlert() {
+    const alertBox = $("selectedDateAlert");
+    const submitBtn = $("submitBookingBtn");
+    const chosenSlot = ($("bookSlotSelect") && $("bookSlotSelect").value) || "Whole Day";
+    if (!alertBox || !selectedDateISO) return;
+
+    const existing = getBookingsForDate(selectedDateISO);
+    const conflict = isSlotTaken(selectedDateISO, chosenSlot);
+
+    if (conflict) {
+      const summary = existing.map((x) => `${x.slot || "Whole Day"}: ${x.reason}`).join(" | ");
+      alertBox.innerHTML = `<span class="cal-status-pill unavail">Unavailable</span> <span style="color:var(--danger);font-weight:600">${escapeHtml(chosenSlot)} on ${escapeHtml(selectedDateISO)} is already booked (${escapeHtml(summary)}).</span>`;
+      if (submitBtn) submitBtn.disabled = true;
+    } else if (existing.length > 0) {
+      const takenList = existing.map((x) => x.slot || "Half-Day").join(", ");
+      alertBox.innerHTML = `<span class="cal-status-pill partial">Half-Day Open</span> <span style="color:var(--ok);font-weight:600">${escapeHtml(chosenSlot)} is available!</span> <span class="subtitle" style="font-size:12px">(${escapeHtml(takenList)} already booked)</span>`;
+      if (submitBtn) submitBtn.disabled = false;
+    } else {
+      alertBox.innerHTML = `<span class="cal-status-pill avail">Open</span> <span style="color:var(--muted)">${escapeHtml(selectedDateISO)} (${escapeHtml(chosenSlot)}) is available for booking.</span>`;
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  }
+
+  function renderCalendar() {
+    const daysEl = $("calendarDays");
+    const titleEl = $("calMonthTitle");
+    if (!daysEl || !titleEl) return;
+
+    const firstDay = new Date(viewYear, viewMonth, 1);
+    titleEl.textContent = firstDay.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+
+    const startWeekday = firstDay.getDay();
+    const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const prevMonthDays = new Date(viewYear, viewMonth, 0).getDate();
+
+    daysEl.innerHTML = "";
+
+    for (let i = startWeekday - 1; i >= 0; i--) {
+      const cell = document.createElement("div");
+      cell.className = "cal-day muted";
+      cell.innerHTML = `<span>${prevMonthDays - i}</span>`;
+      daysEl.appendChild(cell);
+    }
+
+    for (let day = 1; day <= totalDays; day++) {
+      const mm = String(viewMonth + 1).padStart(2, "0");
+      const dd = String(day).padStart(2, "0");
+      const iso = `${viewYear}-${mm}-${dd}`;
+      const list = getBookingsForDate(iso);
+
+      const isWhole = list.some((b) => (b.slot || "Whole Day") === "Whole Day") ||
+        (list.some((b) => b.slot === "Morning (AM)") && list.some((b) => b.slot === "Afternoon (PM)"));
+      const isPartial = !isWhole && list.length > 0;
+
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "cal-day";
+      if (iso === selectedDateISO) cell.classList.add("selected");
+      if (isWhole) cell.classList.add("booked");
+      else if (isPartial) cell.classList.add("partial");
+
+      let badgeHtml = '<span class="cal-status-pill avail">Open</span>';
+      if (isWhole) badgeHtml = '<span class="cal-status-pill unavail">Full</span>';
+      else if (isPartial) badgeHtml = `<span class="cal-status-pill partial">${escapeHtml(list[0].slot === "Morning (AM)" ? "AM Booked" : "PM Booked")}</span>`;
+
+      cell.innerHTML = `<strong>${day}</strong>${badgeHtml}`;
+
+      cell.addEventListener("click", () => {
+        selectedDateISO = iso;
+        if ($("bookDateInput")) $("bookDateInput").value = iso;
+        if ($("unavailDate")) $("unavailDate").value = iso;
+        updateSelectedDateAlert();
+        renderCalendar();
+      });
+
+      daysEl.appendChild(cell);
+    }
+
+    if ($("bookDateInput") && !$("bookDateInput").value) $("bookDateInput").value = selectedDateISO;
+    if ($("unavailDate") && !$("unavailDate").value) $("unavailDate").value = selectedDateISO;
+    updateSelectedDateAlert();
+  }
+
+  if ($("prevMonthBtn")) {
+    $("prevMonthBtn").addEventListener("click", () => {
+      viewMonth -= 1;
+      if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
+      renderCalendar();
+    });
+  }
+  if ($("nextMonthBtn")) {
+    $("nextMonthBtn").addEventListener("click", () => {
+      viewMonth += 1;
+      if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
+      renderCalendar();
+    });
+  }
+  if ($("todayMonthBtn")) {
+    $("todayMonthBtn").addEventListener("click", () => {
+      const now = new Date();
+      viewYear = now.getFullYear();
+      viewMonth = now.getMonth();
+      selectedDateISO = todayISO();
+      if ($("bookDateInput")) $("bookDateInput").value = selectedDateISO;
+      if ($("unavailDate")) $("unavailDate").value = selectedDateISO;
+      renderCalendar();
+    });
+  }
+
+  if ($("bookDateInput")) {
+    $("bookDateInput").addEventListener("change", (e) => {
+      if (e.target.value) {
+        selectedDateISO = e.target.value;
+        updateSelectedDateAlert();
+        renderCalendar();
+      }
+    });
+  }
+  if ($("bookSlotSelect")) {
+    $("bookSlotSelect").addEventListener("change", updateSelectedDateAlert);
+  }
+
+  // Client Booking Form (Supports Half-Day AM / PM / Whole Day + Custom Time)
+  if ($("clientBookingForm")) {
+    $("clientBookingForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const dateVal = $("bookDateInput").value;
+      const slotVal = $("bookSlotSelect").value || "Whole Day";
+      const exactTime = ($("bookCustomTime").value || "").trim();
+      const client = ($("bookClientName").value || "").trim();
+      const eventType = ($("bookEventType").value || "").trim();
+      if (!dateVal || !client || !eventType) return;
+
+      if (isSlotTaken(dateVal, slotVal)) {
+        updateSelectedDateAlert();
+        return;
+      }
+
+      const timeSuffix = exactTime ? ` (${exactTime})` : "";
+      state.blockedDates.push({
+        id: uid(),
+        date: dateVal,
+        slot: slotVal,
+        reason: `${eventType} — ${client}${timeSuffix}`
+      });
+
+      $("bookClientName").value = "";
+      $("bookEventType").value = "";
+      $("bookCustomTime").value = "";
+      if ($("bookingStatusMsg")) {
+        $("bookingStatusMsg").textContent = `Booked: ${client} on ${dateVal} [${slotVal}${timeSuffix}].`;
+      }
+      saveState();
+    });
+  }
+
+  // Manual Unavailable / Edit Form
+  if ($("setUnavailableForm")) {
+    $("setUnavailableForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const editId = $("editingScheduleId").value;
+      const dateVal = $("unavailDate").value;
+      const slotVal = $("unavailSlot").value || "Whole Day";
+      const reasonVal = ($("unavailReason").value || "").trim() || "Unavailable";
+      if (!dateVal) return;
+
+      if (editId) {
+        const target = state.blockedDates.find((b) => b.id === editId);
+        if (target) {
+          target.date = dateVal;
+          target.slot = slotVal;
+          target.reason = reasonVal;
+        }
+        $("editingScheduleId").value = "";
+        $("saveScheduleBtn").textContent = "Add Unavailable Slot";
+        $("cancelEditScheduleBtn").style.display = "none";
+      } else {
+        state.blockedDates.push({ id: uid(), date: dateVal, slot: slotVal, reason: reasonVal });
+      }
+
+      $("unavailReason").value = "";
+      saveState();
+    });
+  }
+
+  if ($("cancelEditScheduleBtn")) {
+    $("cancelEditScheduleBtn").addEventListener("click", () => {
+      $("editingScheduleId").value = "";
+      $("unavailReason").value = "";
+      $("saveScheduleBtn").textContent = "Add Unavailable Slot";
+      $("cancelEditScheduleBtn").style.display = "none";
+    });
+  }
+
+  function renderScheduleLists() {
+    const sorted = [...state.blockedDates].sort((a, b) => a.date.localeCompare(b.date));
+
+    const mgr = $("scheduleManagerList");
+    if (mgr) {
+      mgr.innerHTML = "";
+      if (!sorted.length) {
+        mgr.innerHTML = `<div class="subtitle" style="font-size:13px">${state.lang === "tl" ? "Wala pang naka-book o blocked na petsa. Lahat ng araw ay bukas." : "No bookings or unavailable dates set. All dates are open."}</div>`;
+      } else {
+        sorted.forEach((item) => {
+          const slotLabel = item.slot || "Whole Day";
+          const row = document.createElement("div");
+          row.className = "schedule-item";
+          row.innerHTML = `
+            <div>
+              <strong>${escapeHtml(item.date)}</strong> · <span class="cal-status-pill ${slotLabel === "Whole Day" ? "unavail" : "partial"}">${escapeHtml(slotLabel)}</span>
+              <div class="subtitle" style="font-size:12.5px;margin-top:3px">${escapeHtml(item.reason)}</div>
+            </div>
+          `;
+
+          const btns = document.createElement("div");
+          btns.style.display = "flex";
+          btns.style.gap = "6px";
+
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.className = "btn-small";
+          editBtn.textContent = "Edit";
+          editBtn.addEventListener("click", () => {
+            $("editingScheduleId").value = item.id;
+            $("unavailDate").value = item.date;
+            $("unavailSlot").value = item.slot || "Whole Day";
+            $("unavailReason").value = item.reason;
+            $("saveScheduleBtn").textContent = "Update Booking";
+            $("cancelEditScheduleBtn").style.display = "inline-flex";
+          });
+
+          const cancelBtn = document.createElement("button");
+          cancelBtn.type = "button";
+          cancelBtn.className = "btn-small danger";
+          cancelBtn.textContent = state.lang === "tl" ? "Cancel / Tanggalin" : "Cancel / Delete";
+          cancelBtn.addEventListener("click", () => {
+            state.blockedDates = state.blockedDates.filter((b) => b.id !== item.id);
+            saveState();
+          });
+
+          btns.appendChild(editBtn);
+          btns.appendChild(cancelBtn);
+          row.appendChild(btns);
+          mgr.appendChild(row);
+        });
+      }
+    }
+
+    const homePrev = $("homeSchedulePreview");
+    if (homePrev) {
+      homePrev.innerHTML = "";
+      if (!sorted.length) {
+        homePrev.innerHTML = `<div class="subtitle" style="font-size:13px">${state.lang === "tl" ? "Wala pang naka-book na petsa sa ngayon." : "No booked or blocked dates yet. All dates open."}</div>`;
+      } else {
+        sorted.slice(0, 4).forEach((item) => {
+          const slotLabel = item.slot || "Whole Day";
+          const row = document.createElement("div");
+          row.className = "schedule-item";
+          row.innerHTML = `
+            <div><strong>${escapeHtml(item.date)}</strong> (${escapeHtml(slotLabel)}) · <span class="subtitle" style="font-size:12.5px">${escapeHtml(item.reason)}</span></div>
+            <span class="cal-status-pill ${slotLabel === "Whole Day" ? "unavail" : "partial"}">${slotLabel === "Whole Day" ? "Full" : "Half-Day"}</span>
+          `;
+          homePrev.appendChild(row);
+        });
+      }
+    }
+  }
+
+  // =========================================================
+  // ANNOUNCEMENTS
+  // =========================================================
+  if ($("announcementForm")) {
+    $("announcementForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const editId = $("editAnnounceId").value;
+      const title = ($("announceTitle").value || "").trim();
+      const body = ($("announceBody").value || "").trim();
+      if (!title || !body) return;
+
+      if (editId) {
+        const target = state.announcements.find((a) => a.id === editId);
+        if (target) {
+          target.title = title;
+          target.body = body;
+          target.createdAt = todayISO();
+        }
+        $("editAnnounceId").value = "";
+        $("saveAnnounceBtn").textContent = "Publish Announcement";
+        $("cancelAnnounceEditBtn").style.display = "none";
+      } else {
+        state.announcements.unshift({ id: uid(), title, body, createdAt: todayISO() });
+      }
+
+      $("announceTitle").value = "";
+      $("announceBody").value = "";
+      saveState();
+    });
+  }
+
+  if ($("cancelAnnounceEditBtn")) {
+    $("cancelAnnounceEditBtn").addEventListener("click", () => {
+      $("editAnnounceId").value = "";
+      $("announceTitle").value = "";
+      $("announceBody").value = "";
+      $("saveAnnounceBtn").textContent = "Publish Announcement";
+      $("cancelAnnounceEditBtn").style.display = "none";
+    });
+  }
+
+  function renderAnnouncements() {
+    const list = $("announcementsList");
+    if (list) {
+      list.innerHTML = "";
+      if (!state.announcements.length) {
+        list.innerHTML = '<div class="empty-box">No announcements published yet.</div>';
+      } else {
+        state.announcements.forEach((ann) => {
+          const card = document.createElement("div");
+          card.className = "announcement-card";
+          card.id = "ann_" + ann.id;
+
+          const top = document.createElement("div");
+          top.className = "announcement-top";
+          top.innerHTML = `
+            <div>
+              <span class="tag-pin">Notice · ${escapeHtml(ann.createdAt)}</span>
+              <h3 style="margin:6px 0 6px">${escapeHtml(ann.title)}</h3>
+              <p class="subtitle" style="color:var(--text)">${escapeHtml(ann.body)}</p>
+            </div>
+          `;
+
+          const actions = document.createElement("div");
+          actions.style.display = "flex";
+          actions.style.gap = "6px";
+          actions.style.flexShrink = "0";
+
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.className = "btn-small";
+          editBtn.textContent = "Edit";
+          editBtn.addEventListener("click", () => {
+            $("editAnnounceId").value = ann.id;
+            $("announceTitle").value = ann.title;
+            $("announceBody").value = ann.body;
+            $("saveAnnounceBtn").textContent = "Update Announcement";
+            $("cancelAnnounceEditBtn").style.display = "inline-flex";
+          });
+
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "btn-small danger";
+          delBtn.textContent = "Delete";
+          delBtn.addEventListener("click", () => {
+            state.announcements = state.announcements.filter((a) => a.id !== ann.id);
+            saveState();
+          });
+
+          actions.appendChild(editBtn);
+          actions.appendChild(delBtn);
+          top.appendChild(actions);
+          card.appendChild(top);
+          list.appendChild(card);
+        });
+      }
+    }
+
+    const homePrev = $("homeAnnouncementsPreview");
+    if (homePrev) {
+      homePrev.innerHTML = "";
+      if (!state.announcements.length) {
+        homePrev.innerHTML = '<div class="subtitle" style="margin-top:12px;font-size:13px">No active announcements.</div>';
+      } else {
+        state.announcements.slice(0, 2).forEach((ann) => {
+          const item = document.createElement("div");
+          item.className = "announcement-card";
+          item.innerHTML = `<span class="tag-pin">${escapeHtml(ann.createdAt)}</span><h3 style="margin:6px 0 4px;font-size:16px">${escapeHtml(ann.title)}</h3><p class="subtitle" style="font-size:13px">${escapeHtml(ann.body)}</p>`;
+          homePrev.appendChild(item);
+        });
+      }
+    }
+  }
+
+  // =========================================================
+  // NOTES
+  // =========================================================
+  if ($("noteForm")) {
+    $("noteForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const editId = $("editNoteId").value;
+      const title = ($("noteTitleInput").value || "").trim();
+      const body = ($("noteContentInput").value || "").trim();
+      if (!title || !body) return;
+
+      if (editId) {
+        const n = state.notes.find((x) => x.id === editId);
+        if (n) {
+          n.title = title;
+          n.body = body;
+          n.updatedAt = todayISO();
+        }
+        $("editNoteId").value = "";
+        $("saveNoteBtn").textContent = "Save Note";
+        $("cancelNoteEditBtn").style.display = "none";
+      } else {
+        state.notes.unshift({ id: uid(), title, body, updatedAt: todayISO() });
+      }
+
+      $("noteTitleInput").value = "";
+      $("noteContentInput").value = "";
+      saveState();
+    });
+  }
+
+  if ($("cancelNoteEditBtn")) {
+    $("cancelNoteEditBtn").addEventListener("click", () => {
+      $("editNoteId").value = "";
+      $("noteTitleInput").value = "";
+      $("noteContentInput").value = "";
+      $("saveNoteBtn").textContent = "Save Note";
+      $("cancelNoteEditBtn").style.display = "none";
+    });
+  }
+
+  function renderNotes() {
+    const grid = $("notesContainer");
+    if (!grid) return;
+    grid.innerHTML = "";
+
+    if (!state.notes.length) {
+      grid.innerHTML = '<div class="empty-box" style="grid-column:1/-1">No notes yet. Add a note above.</div>';
+      return;
+    }
+
+    state.notes.forEach((n) => {
+      const card = document.createElement("div");
+      card.className = "note-card";
+      card.id = "note_" + n.id;
+      card.innerHTML = `
+        <div>
+          <div class="eyebrow">${escapeHtml(n.updatedAt)}</div>
+          <h3 style="margin:5px 0 8px">${escapeHtml(n.title)}</h3>
+          <p class="subtitle" style="color:var(--text);white-space:pre-wrap">${escapeHtml(n.body)}</p>
+        </div>
+      `;
+
+      const foot = document.createElement("div");
+      foot.style.display = "flex";
+      foot.style.gap = "6px";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "btn-small";
+      editBtn.textContent = "Edit";
+      editBtn.addEventListener("click", () => {
+        $("editNoteId").value = n.id;
+        $("noteTitleInput").value = n.title;
+        $("noteContentInput").value = n.body;
+        $("saveNoteBtn").textContent = "Update Note";
+        $("cancelNoteEditBtn").style.display = "inline-flex";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "btn-small danger";
+      delBtn.textContent = "Delete";
+      delBtn.addEventListener("click", () => {
+        state.notes = state.notes.filter((x) => x.id !== n.id);
+        saveState();
+      });
+
+      foot.appendChild(editBtn);
+      foot.appendChild(delBtn);
+      card.appendChild(foot);
+      grid.appendChild(card);
+    });
+  }
+
+  // =========================================================
+  // CLIENT REVIEWS
+  // =========================================================
+  let pendingReviewPhotos = [];
+
+  function renderPendingReviewPhotos() {
+    const prev = $("revUploadPreview");
+    if (!prev) return;
+    prev.innerHTML = "";
+    pendingReviewPhotos.forEach((src, idx) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Uploaded review photo ${idx + 1}`;
+      img.addEventListener("click", () => openLightbox(src));
+      prev.appendChild(img);
+    });
+  }
+
+  if ($("revPhotosInput")) {
+    $("revPhotosInput").addEventListener("change", (ev) => {
+      const files = Array.from(ev.target.files || []);
+      if (!files.length) return;
+      files.forEach((file) => {
+        compressImage(file, 900, (dataUrl) => {
+          pendingReviewPhotos.push(dataUrl);
+          renderPendingReviewPhotos();
+        });
+      });
+      ev.target.value = "";
+    });
+  }
+
+  if ($("reviewForm")) {
+    $("reviewForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const author = ($("revAuthor").value || "").trim();
+      const eventName = ($("revEvent").value || "").trim() || "Client Session";
+      const rating = Number($("revRating").value || 5);
+      const comment = ($("revComment").value || "").trim();
+      if (!author || !comment) return;
+
+      state.reviews.unshift({
+        id: uid(),
+        author,
+        eventName,
+        rating,
+        comment,
+        photos: [...pendingReviewPhotos],
+        date: todayISO()
+      });
+
+      pendingReviewPhotos = [];
+      renderPendingReviewPhotos();
+      $("reviewForm").reset();
+      saveState();
+    });
+  }
+
+  function renderReviews() {
+    const list = $("reviewsList");
+    if (!list) return;
+    list.innerHTML = "";
+
+    if (!state.reviews.length) {
+      list.innerHTML = '<div class="empty-box">No client reviews yet. Use the form on the left to post a review and upload photos.</div>';
+      return;
+    }
+
+    state.reviews.forEach((r) => {
+      const card = document.createElement("div");
+      card.className = "review-card";
+      card.id = "rev_" + r.id;
+
+      const stars = "★".repeat(r.rating) + "☆".repeat(Math.max(0, 5 - r.rating));
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div>
+            <div class="eyebrow">${escapeHtml(r.eventName)} · ${escapeHtml(r.date)}</div>
+            <h3 style="margin:4px 0">${escapeHtml(r.author)}</h3>
+          </div>
+          <span style="color:var(--accent);font-weight:700;font-size:14px">${stars}</span>
+        </div>
+        <p class="subtitle" style="color:var(--text);margin-top:8px">${escapeHtml(r.comment)}</p>
+      `;
+
+      if (r.photos && r.photos.length) {
+        const pGrid = document.createElement("div");
+        pGrid.className = "review-photos";
+        r.photos.forEach((src) => {
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = `Photo by ${r.author}`;
+          img.addEventListener("click", () => openLightbox(src));
+          pGrid.appendChild(img);
+        });
+        card.appendChild(pGrid);
+      }
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "btn-small danger";
+      delBtn.style.marginTop = "12px";
+      delBtn.textContent = "Delete Review";
+      delBtn.addEventListener("click", () => {
+        state.reviews = state.reviews.filter((x) => x.id !== r.id);
+        saveState();
+      });
+      card.appendChild(delBtn);
+
+      list.appendChild(card);
+    });
+  }
+
+  // =========================================================
+  // ACCURATE GLOBAL SEARCH BAR
+  // =========================================================
+  function runAccurateSearch(query) {
+    const panel = $("searchResultsPanel");
+    const clearBtn = $("searchClearBtn");
+    if (!panel) return;
+
+    const q = String(query || "").trim().toLowerCase();
+    if (clearBtn) clearBtn.classList.toggle("visible", q.length > 0);
+
+    if (!q) {
+      panel.classList.remove("open");
+      panel.innerHTML = "";
+      return;
+    }
+
+    const hits = [];
+
+    state.albums.forEach((alb) => {
+      const titleMatch = (alb.title || "").toLowerCase().includes(q);
+      const photoMatches = (alb.photos || []).filter((p) => (p.name || "").toLowerCase().includes(q));
+      if (titleMatch || photoMatches.length > 0) {
+        hits.push({
+          category: "Event Album",
+          title: alb.title,
+          sub: photoMatches.length > 0
+            ? `${photoMatches.length} matching photo(s) · ${alb.photos.length} total`
+            : `${alb.photos.length} photo(s) in album`,
+          page: "albums",
+          targetId: "album_" + alb.id
+        });
+      }
+    });
+
+    state.announcements.forEach((ann) => {
+      if ((ann.title || "").toLowerCase().includes(q) || (ann.body || "").toLowerCase().includes(q)) {
+        hits.push({
+          category: "Announcement",
+          title: ann.title,
+          sub: ann.body.slice(0, 75),
+          page: "announcements",
+          targetId: "ann_" + ann.id
+        });
+      }
+    });
+
+    state.blockedDates.forEach((b) => {
+      if (
+        (b.date || "").toLowerCase().includes(q) ||
+        (b.slot || "").toLowerCase().includes(q) ||
+        (b.reason || "").toLowerCase().includes(q)
+      ) {
+        hits.push({
+          category: "Booked Schedule",
+          title: `${b.date} · ${b.slot || "Whole Day"}`,
+          sub: b.reason,
+          page: "calendar",
+          targetId: null
+        });
+      }
+    });
+
+    state.notes.forEach((n) => {
+      if ((n.title || "").toLowerCase().includes(q) || (n.body || "").toLowerCase().includes(q)) {
+        hits.push({
+          category: "Note",
+          title: n.title,
+          sub: n.body.slice(0, 75),
+          page: "notes",
+          targetId: "note_" + n.id
+        });
+      }
+    });
+
+    state.reviews.forEach((r) => {
+      if (
+        (r.author || "").toLowerCase().includes(q) ||
+        (r.eventName || "").toLowerCase().includes(q) ||
+        (r.comment || "").toLowerCase().includes(q)
+      ) {
+        hits.push({
+          category: "Client Review",
+          title: `${r.author} (${r.eventName})`,
+          sub: r.comment.slice(0, 75),
+          page: "reviews",
+          targetId: "rev_" + r.id
+        });
+      }
+    });
+
+    panel.innerHTML = "";
+    if (!hits.length) {
+      panel.innerHTML = `<div class="search-hit" style="cursor:default"><span class="search-hit-sub">No exact matches found for "<strong>${escapeHtml(query)}</strong>".</span></div>`;
+      panel.classList.add("open");
+      return;
+    }
+
+    hits.slice(0, 12).forEach((h) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "search-hit";
+      btn.innerHTML = `
+        <span class="search-hit-cat">${escapeHtml(h.category)}</span>
+        <span class="search-hit-title">${escapeHtml(h.title)}</span>
+        <span class="search-hit-sub">${escapeHtml(h.sub)}</span>
+      `;
+      btn.addEventListener("click", () => {
+        showPage(h.page);
+        panel.classList.remove("open");
+        if (h.targetId && $(h.targetId)) {
+          setTimeout(() => {
+            $(h.targetId).scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 80);
+        }
+      });
+      panel.appendChild(btn);
+    });
+    panel.classList.add("open");
+  }
+
+  if ($("globalSearchInput")) {
+    $("globalSearchInput").addEventListener("input", (e) => runAccurateSearch(e.target.value));
+    $("globalSearchInput").addEventListener("focus", (e) => {
+      if (e.target.value.trim()) runAccurateSearch(e.target.value);
+    });
+  }
+  if ($("searchClearBtn")) {
+    $("searchClearBtn").addEventListener("click", () => {
+      if ($("globalSearchInput")) $("globalSearchInput").value = "";
+      runAccurateSearch("");
+    });
+  }
+  document.addEventListener("click", (e) => {
+    const box = document.querySelector(".search-box");
+    if (box && !box.contains(e.target) && $("searchResultsPanel")) {
+      $("searchResultsPanel").classList.remove("open");
+    }
+  });
+
+  // =========================================================
+  // MASTER RENDER
+  // =========================================================
+  function syncStudioLabels() {
+    const sName = state.studioName || "Rhandom Visuals";
+    const sSub = state.studioSub || "Client Studio Portal";
+    const initials = sName.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "RV";
+
+    if ($("topInitials")) $("topInitials").textContent = initials;
+    if ($("topStudioName")) $("topStudioName").textContent = sName;
+    if ($("topStudioSub")) $("topStudioSub").textContent = sSub;
+    if ($("footerStudioLabel")) $("footerStudioLabel").textContent = sName;
+
+    if ($("setStudioName")) $("setStudioName").value = sName;
+    if ($("setStudioSub")) $("setStudioSub").value = sSub;
+    if ($("setProfileBio")) $("setProfileBio").value = state.profileBio || "";
+    if ($("setFbUrl")) $("setFbUrl").value = state.socialFacebook || "";
+    if ($("setIgUrl")) $("setIgUrl").value = state.socialInstagram || "";
+    if ($("setTtUrl")) $("setTtUrl").value = state.socialTiktok || "";
+
+    const totalUploadedPhotos = state.albums.reduce((acc, alb) => acc + (alb.photos ? alb.photos.length : 0), 0);
+    if ($("snapAlbums")) $("snapAlbums").textContent = String(state.albums.length);
+    if ($("snapPhotos")) $("snapPhotos").textContent = String(totalUploadedPhotos);
+    if ($("snapBookings")) $("snapBookings").textContent = String(state.blockedDates.length);
+    if ($("snapReviews")) $("snapReviews").textContent = String(state.reviews.length);
+  }
+
+  function renderAll() {
+    applyTheme();
+    applyLanguage();
+    syncStudioLabels();
+    renderProfile();
+    renderAlbums();
+    startSlideshowLoop();
+    renderCalendar();
+    renderScheduleLists();
+    renderAnnouncements();
+    renderNotes();
+    renderReviews();
+  }
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
